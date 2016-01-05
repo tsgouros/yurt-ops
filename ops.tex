@@ -1,0 +1,738 @@
+\documentclass[11pt]{article}
+\usepackage{mathptmx}
+\usepackage{verbatim}
+\usepackage[margin=1.25in]{geometry}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{url}
+\usepackage[colorlinks,
+            bookmarks=true,
+            hyperindex,
+            linkcolor={blue},
+            pdftitle={YURT Operations Manual}]{hyperref}
+
+\newsavebox{\notebox}
+\newenvironment{note}[1][Note]{\begin{lrbox}{\notebox}%
+    \begin{minipage}{0.9\columnwidth}\textcolor{red}{\textbf{#1}:~}}%
+    {\end{minipage}\end{lrbox}\begin{center}\setlength{\fboxsep}{8pt}%
+    \fbox{\usebox{\notebox}}\end{center}}
+
+
+% \newenvironment{note}[1][Note]{%
+%   \begin{center}\setlength{\fboxsep}{10pt}
+%   \framebox\bgroup\begin{minipage}{0.9\columnwidth}\textbf{#1}:~}%
+%   {\end{minipage}\egroup\end{center}}
+
+
+%{\textbf{#1}}{}
+
+\begin{document}
+
+\title{Brown University YURT Operations Manual}
+\author{Tom Sgouros}
+\maketitle
+
+\tableofcontents
+
+\setlength{\parskip}{10pt}
+\setlength{\parindent}{0pt}
+
+\section{Access and safety}
+
+\subsection{Access to catwalk}
+
+Access to the catwalk is via the ladder leaning on the wall.
+
+When doing work on the catwalk, there is a wooden grating that is to
+be placed between the catwalk supports to prevent falls and dropping
+items onto the mirrors below.  There are two gratings stored under the
+floor, just inside the eastern access door.  Projectors shine through
+those gaps so the gratings cannot be left in place.
+
+\subsection{Access to upper mirrors and rear top of wall}
+
+Inside the eastern access door to the under-floor area, there is a
+platform with two long legs and two short legs. It is meant to sit
+behind the front wall of the yurt, with two short legs resting on the
+back of the floor structure and the two long legs reaching down to the
+actual room floor.  From this platform, you can reach the bottom of
+the catwalk, or the top of the upper mirrors.
+
+\subsection{Removing upper projectors}
+
+To remove an upper wall projector or a ceiling projector, please
+follow these steps:
+
+\begin{enumerate}
+\item There is a small dolly that will fit on the catwalk, stored in
+  the work area behind the elevator.
+
+\item Place safety grating over the nearest gap to the projector.
+
+\item Loosen set screws on vertical shaft.  The projector mount,
+  including the flat plate, and the shaft, must be removed with the
+  projector.
+
+\item Slide projector and mount down and out of collar, place onto
+  dolly.
+\end{enumerate}
+
+
+\section{Projectors}
+
+There are two documents we have from the projector manufacturer.  One
+is the specification for the projectors we have, and the other is a
+repair manual for a related species of projector.  They are stored in
+\texttt{/home/tsgouros/cave-documents}.
+
+In process, there is also a repair manual, being assembled by the
+distributor.
+
+
+\subsection{Location}
+
+The projectors are numbered 0 through 68, plus number 70, which is
+used for machine control of projectors in the repair station.
+
+\begin{center}
+\begin{tabular}{ll}
+0--9 & ceiling \\
+10--37 & front wall \\
+38--43 & west door \\
+44--49 & east door \\
+50--68 & floor \\
+70 & repair station
+\end{tabular}
+\end{center}
+
+\begin{center}
+\includegraphics[width=5in]{ceiling.pdf}
+\end{center}
+
+\begin{center}
+\includegraphics[width=5in]{wall.pdf}
+\end{center}
+
+\begin{center}
+\includegraphics[width=5in]{floor.pdf}
+\end{center}
+
+\begin{center}
+\includegraphics[width=4in]{doors.pdf}
+\end{center}
+
+\subsection{Operation}
+\label{projector-operation}
+
+Turn projectors on and off with the pjcontrol command.  You can
+identify a projector by number individually, or in a list or range: 
+
+\begin{verbatim}
+$ pjcontrol 53 on
+$ pjcontrol 33,34,35 on
+$ pjcontrol 33-35 off
+\end{verbatim}
+
+The pjcontrol command also is used to configure the projector color
+and brightness, and to log repairs and track inventory.  Sign in as
+cavedemo and type ``pjcontrol --help'' for more detail.
+
+
+\subsection{Inventory and Logs}
+\label{logging}
+
+The electronic log is currently held in the etc directory of the
+cavedemo account.  It is an anydbm file, readable with the pjcontrol
+python script stored in the cavedemo bin directory.
+
+\begin{verbatim}
+$ /users/cavedemo/bin/pjcontrol -R
+\end{verbatim}
+
+This produces a report of the condition of all the projectors, and a
+list of all the installed projectors.
+
+The following commands will produce a report about a single
+projector.  The first will only work on an installed projector, while
+the second will work on any projector in the database.
+
+\begin{verbatim}
+$ pjcontrol 53 report
+\end{verbatim}
+
+\begin{verbatim}
+$ pjcontrol -s WOCY00022 -R
+\end{verbatim}
+
+\subsubsection{Periodic logs}
+
+The pjcontrol system should have all the error and color calibration
+records updated periodically.  Run:
+
+\begin{verbatim}
+$ /users/cavedemo/bin/pjcontrol -g
+\end{verbatim}
+
+This steps through all the projectors, downloading their error
+record, color calibration, and usage time data into the master
+database.
+
+\begin{note}[IMPORTANT]
+This is only effective when all the projectors are turned on.
+\end{note}
+
+This should be run weekly, with a report run and recorded as often.
+
+
+\subsection{Maintenance and repairs}
+
+So far as we currently understand it, the only maintenance required is
+the replacement of bulbs.  Policy is to replace them when they blow
+out, not to anticipate this.
+
+All maintenance and repair actions should be recorded on the paper
+maintenance log.  The actions relevant to a specific projector will be
+entered into the projector database from that record, by Tom.  (You
+are welcome to enter them yourself with the pjcontrol script.  Please
+record on the paper log that it was successfully entered.  See
+section~\ref{logging}.) 
+
+
+\subsubsection{Bulbs}
+
+Bulbs should be replaced when they blow out.  We are not currently
+replacing them proactively.  Once the color calibration is functional,
+we will be keeping data about color change over the bulb lifetime and
+may change policy after analyzing that data.
+
+We have seven spare bulbs.  As bulbs pop, send them off to be
+relamped.
+
+We have two bulb suppliers at present:
+
+Relampit -- Tom Sullivan, Relampit, 120 Wilbur Place, Suite C,
+Bohemia, NY 11716, 631-244-0051x122, tsullivan@relampit.com, \$558
+new, \$495 relamp.  Warranty runs 90 days from installation, free
+shipping.
+
+Greenleigh and Wong -- Tom Greenleigh, Greenleigh Wong Lamps, 1680
+Navajo Road, Ground Floor, Ogden UT, 84403, 801-475-7800,
+tom@gwlamps.com. \$535 new, \$361 relamp.  Warranty runs 180 days from
+shipping.
+
+
+
+\subsubsection{Shipping for repair}
+
+Units should be shipped for repair in one of the original boxes. There
+are a few still around.
+
+Before sending off, please ensure that the error record of the
+projector is recorded in the projector database. If the projector is
+not currently installed, do this by installing it at port 70 (the
+repair port), and issuing the following:
+
+\begin{verbatim}
+$ pjcontrol 70 gather
+\end{verbatim}
+
+
+
+
+\subsection{Ventilation}
+
+The wall projectors are vented directly into the AC return duct at the
+back of the room.  It is important to make sure the lowest extension
+of the duct is blocked.
+
+Where is the system controlled?  How?  Does it change with the
+heating/cooling season?
+
+1) how can the cooling system be monitored so that problems with it
+don’t lead to projector damage
+
+2) is the return booster operating?  How can we tell, and how do we
+turn it on if it isn’t on
+
+3) the makeup air intake through the roof will potentially mix in
+outside air, potentially reducing the return flow.  How do we ensure
+that doesn’t cause problems with this system that is cooling both
+people space and equipment?
+
+
+\subsection{Frame Lock}
+\label{framelock}
+
+Sometimes the projectors get out of sync with each other, and the
+stereo is different every way you look.
+
+The projectors are synchronized electronically with daisy-chain
+connections among the cave nodes which serve to synchronize the
+graphics cards.  Apparently the settings are not durable through a
+power outage or reboot.  Use this procedure to reset the frame lock.
+
+\begin{enumerate}
+
+\item Log in as cavedemo.  Use one of the linux terminals in the lab,
+  or ssh -X to one of the cave nodes.
+
+\item Run \texttt{nvidia-settings -c cave001:0}.  This should start up
+  a GUI for you.
+
+\item Look in the bottom right of the window for a ``disable frame
+  lock'' button.  Click it, wait, then click ``enable frame lock.''
+  You'll see lots of green if it worked.
+
+\end{enumerate}
+
+
+
+\section{Kiosk}
+
+The Kiosk is (sadly) a Windows machine.  There isn't a lot to say
+about it, but when it misbehaves and needs to be rebooted, use this
+procedure.
+
+\begin{enumerate}
+\item Remove the Opti-Track software dongle from the USB ports on the
+  back.  Remember which port it came from.  This dongle appears to
+  prevent the machine from booting properly.
+
+\item Reboot.
+
+\item Replace Opti-Track dongle.
+
+\item Restart tracking, pointer, and sound server software.
+
+\item Start Internet Explorer and make sure it's pointing at the Kiosk
+  web page.
+
+\end{enumerate}
+
+
+\section{Tracking, Heads and Pointers}
+
+\subsection{Opti-Track tracking system}
+\label{opti-track}
+
+\begin{note}
+  The calibration display clients seem to affect the sync signal
+  received by the opti-track software.  You may have to restart the
+  framelock after calibrating the projectors.  See
+  section~\ref{framelock}.
+\end{note}
+
+The Opti-Track system consists of a bunch of cameras aimed at a bunch
+of reflective balls.  When three or more cameras see a particular
+ball, they can pinpoint its position to within a millimeter.  When the
+cameras see three out of some random constellation of balls, such as
+is on the tracked glasses, or the wand, the system can pinpoint that
+constellation and thus the gaze or the hand of the user.
+
+
+
+\subsubsection{Starting the Opti-Track}
+
+Double click on the ``Motive'' software icon.  When it comes up it
+will ask whether you want to open an existing project.  Say yes, and
+then choose the ``Cave'' project, usually at the bottom of the list.
+
+
+How to start / restart?
+
+\subsubsection{Calibrating the Opti-Track}
+
+To calibrate the Opti-Track system, start it up as above, then click
+``Layout'' and choose the calibration option from the drop-down menu.
+
+\begin{enumerate}
+
+\item Mask the visible light sources.
+
+\item Choose calibration type (``full'') and `optiwand' option
+  (``large''). 
+
+\item Make sure that all the cameras are accounted for and reporting
+  properly in the list on the left of the window.
+
+\item Click ``start wanding'' and start waving the wand around slowly
+  up and down.  The cameras have some feedback capacity built into
+  their lights.  You'll see the cameras near you turn green as they
+  are satisfied, then move over nearer another not-yet-green camera.
+
+\item Eventually the software will tell you it has enough data for a
+  good (or very good) calibration, at which point you can stop.
+
+\item Click ``calculate''
+
+\item Set the ground plane thing on the floor.  The origin of the cave is on
+  the seam of the true floor (not the sacrificial floor), halfway
+  across.  Put the ground corner of the ground plane over that point,
+  and aim the long leg at the center of the screen.  Level it if
+  necessary.
+
+\item Click ``ground plane''
+
+\item The actual zero of the yurt is four feet above the ground plane,
+  so you'll have to adjust the Y dimension of the calibration to equal
+  -1219 (millimeters).  You should see the lighting icons drop down in
+  the display pane.
+
+\item Click on the file menu, and save project.
+
+\end{enumerate}
+
+
+\subsubsection{Adding an object to the calibration}
+
+The glasses and wand are constellations of reflectors whose pattern is
+stored and recognized by the Opti-Track software.  Sometimes you'll
+want to replace these items, or the metal may become bent and the
+system will not recognize it any more.
+
+Steps for adding/replacing an object.
+
+
+\subsubsection{3D printer patterns}
+
+Pattern for Johannes's glasses holder thing?
+
+
+
+
+\subsection{Polhemus tracking}
+
+
+Charging, location of transmitter, how is it connected and powered?
+
+Is there software that needs to be started/restarted?
+
+Sync is received from projector 11 (because that's the one closest to
+the console machine).
+
+
+\subsection{Pointer}
+
+Don't forget to restart the wand's VRPN server if the dongle gets unplugged.
+
+
+There is a button on the joystick dongle.  Press it while inserting
+the button to put it into the correct mode for YURT operation.
+
+Wand must sometimes be ``paired'' with the dongle.  Sometimes this
+happens on battery changes, and it definitely happens when the wand is
+swapped for repair.  The wand will complain that it is not paired by
+flashing its blue power light.  To pair, press the button on the
+dongle and within eight seconds, press both the power button and the
+select button (the button opposite the power button).  This is an
+undocumented feature of the wand, so these instructions are merely
+provisional.
+
+
+
+
+
+\section{Glasses, Stereo}
+
+The Volfoni glasses are operated by an RF signal generated by a small
+transmitter plugged into the sync output of projector 11.  (Bottom
+left on the front wall.)  It is powered by a controllable plug strip,
+so that it can be turned off then the Yurt is not in use.  This allows
+the glasses to time out and power down.
+
+
+\subsection{Stereo backwards}
+
+There is currently no positive identification of the left and right
+eye in the stereo signal.  Sometimes when the system is started
+up, the signals will be swapped and the stereo will appear wrong, with
+the viewer's left eye shown the image that belongs on the right.
+Worse, the stereo polarity is known to spontaneously reverse from time to
+time.  This is irritating and we are working on fixing this problem.
+In the meantime, to fix the problem, you can use the controls for the
+Opti-Track software.  (See section~\ref{opti-track}.)
+
+Over on the right hand side of the Motive software window, you'll see
+an ``Output 1'' list of attributes.  Beneath it, there is a
+``Polarity'' setting, with a dropdown menu.  Click on that option,
+change the polarity from inverse to normal or the other way around,
+and click ``Apply'' at the top of that column of the screen.
+
+
+The kiosk has a program on it for checking the stereo configuration
+(on the System tab).  It alternates red and green fields for the left
+and right eyes.  When you hold the glasses up against any part of the
+Yurt screen, one lens will appear red and the other green.  When the
+glasses look like the image of the glasses in the icon, the stereo is
+configured correctly.  
+
+When the framelock is not working, there will frequently be areas of
+the screen for which the stereo is not working.  If you see
+inconsistencies across the field of view, try resetting the
+framelock.  See section~\ref{framelock} on Framelock. 
+
+
+\iffalse
+
+You can also toggle the stereo by turning projector 11 stereo off and
+then on again.
+
+\begin{verbatim}
+$ pjcontrol 11 mono
+$ pjcontrol 11 stereo
+\end{verbatim}
+
+There is only a 50\% chance that this procedure will leave the system
+in the correct state, so you may have to try it a few times before it
+works properly.  Take comfort in the fact that there is only a 6.25\%
+chance you'll have to do it more than four times.
+
+\fi
+
+\subsection{Operating the glasses}
+
+To turn the Volfoni glasses on, press the button (not the switch) on
+the left temple.  You'll see the lenses blink left, then right, then
+wait a beat, and both lenses will go dark together.  When you put the
+glasses on you should see the stereo images.
+
+The switch on the glasses does not do
+anything.  (Except on one pair somewhere, where it reverses the
+stereo.  That pair is marked with an `M' on the temple.)
+
+If the glasses are on, pressing the button will cause the LED on the
+bridge of the nose to blink.  Three blinks mean fully charged, two
+means sort of charged, and one blink means charge me.
+
+The glasses will not turn themselves off as long as the RF transmitter
+is within range.  Since it covers the room, assume the glasses do not
+turn themselves off.  To power off the glasses, hold the button down
+until the lenses go clear.
+
+
+\section{Scalable software, Warping and Blending}
+
+Software from Scalable Display manages the blending and warping of the
+projector images so that several projectors can work as one.  This is
+commercial software, with a license that must be kept up to date.
+Also, the system must be recalibrated periodically, as projectors are
+jostled or vibrate to a different position.
+
+\subsection{License}
+
+The scalable license file should be kept in the cavedemo z: folder,
+under the ``scalable'' directory.  Look for a .licx file.
+
+\subsection{Calibrating the software}
+
+Calibrating a wall of the yurt involves pointing a camera at the wall
+and running the calibration software.  The software illuminates the
+projectors one at a time, and notes its position, including the edges.
+This is used to calculate the zones in which the projector images
+overlap.
+
+\subsubsection{Running calibration}
+
+These are the steps for running a calibration.  The projectors should
+be calibrated periodically, as well as after any work that might
+involve jostling or moving them.  The calibration is done per wall.
+There are five walls in the syste: front, ceiling, floor, left and
+right doors.
+
+\begin{enumerate}
+
+\item Turn on relevant projectors, plug in camera.  Make sure the camera
+  appears as a USB device on the console computer.  Set up the camera
+  so it is looking at the wall to be calibrated.  The camera should be
+  set on Manual exposure.
+
+\item Start Scalable display clients on each of the relevant nodes.
+  This is done by executing RunDisplayClient.sh on each node.  There
+  is a ``Calibrate'' icon in the System window of the kiosk that
+  will start the display clients on all the nodes.
+
+\newcommand{\bs}{$\backslash$}
+\item The configurations are kept on the kiosk machine, in the
+  directory \hbox{\texttt{C:\bs Program Files\bs ScalableDisplay\bs
+      DEI\bs SystemData }}.  You will find several directories in
+  there, called ``DefaultSystem.front'' and so on.  These need to be
+  copied into ``DefaultSystem.''  Check out the
+  ``winders/cave/scripts'' directory, where you'll find cygwin scripts
+  called ``restore\_front.sh'' and so on.  Run the appropriate one of
+  those scripts to copy all the calibration files into the right place.
+
+\item Start the Scalable Display Manager from the icon on the kiosk
+  machine desktop.  Check that the display clients your wall uses are
+  green and on the right. Click ``Next'' or ``Camera Display.''
+
+  \begin{center}
+  \begin{tabular}{ll}
+    Front wall & cave001, cave002, cave003, cave004, cave005, cave006,
+                 cave007 \\
+    Ceiling & cave008, cave009, cave010 \\
+    Left door & cave011, cave019 \\
+    Right door & cave012, cave013 \\
+    Floor & cave014, cave015, cave016, cave017, cave018 \\ 
+  \end{tabular}
+\end{center}
+
+
+\item Projectors display.  Ignore this.  The arrangement of the
+  projectors in this display is meaningless, and the checkboxes on
+  each projector do not work.  Click ``Next'' in the lower right
+  corner, and move on to the camera display.
+
+\item Camera display.  Set the exposure for the camera down to about
+  .25s, then click on ``Gather data'' and watch the (not very
+  interesting) light show.  The computer will turn on each projector
+  full white, then go back and do them all with little blocks, and
+  with a central image that defines the orientation of the
+  screen.
+
+\item Screen position.  Set the control points for the calibration.
+  You can set these on the screen on a camera image, or move around
+  cursors that appear on the walls.
+
+  \begin{description}
+
+  \item[Front wall] Six control points, four on the outer corners, and
+    two at the center, at the top and bottom edges.  The center isn't
+    spiked just now, but should be.
+
+  \item[Floor] Four control points, two are placed where the floor
+    seams meet the front wall, and the other two are placed at the
+    floor corners, just past the wall edge.
+
+  \item[Doors] Place the control points at the four corners.
+
+  \item[Ceiling] Six control points, four on the outer corners, and
+    two central.  The center isn't spiked, but should be.
+
+  \end{description}
+
+\begin{note}[BUG] Linux display client should display a set of cursors for
+  setting the control points, but they do not because the fonts are
+  not loaded.  Could use laser
+  pointers to spike the point?
+\end{note}
+
+\item Perspective display.  All the walls are defined with coordinates
+  that place them in the front of the room.  After calibration, these
+  shapes must be rotated into the correct location.  The ``Eye Point''
+  menu in the perspective display is where this rotation happens.
+  This has been set already, and if you are using the proper
+  ``DefaultSystem'' directory, you should not have to reset this.
+
+\item After the control points have been placed, you can click
+  ``update calibration'' and if it runs successfully you're done with
+  the hard part, congratulate yourself.
+
+\item After successful calibration, the output POL files must be
+  renamed and distributed to their final locations.  There are a set
+  of scripts in the cavedemo directory ``winders/cave/scripts''
+  called ``copy\_front.sh'' and the like.  These are to be executed in
+  a cygwin window on the kiosk (Windows) machine, where they can be
+  found at ``/cygdrive/z/winders/cave/scripts.''
+
+\item Backup a successful calibration by running the script (in the
+  same directory) called ``backup\_front\_wall.sh'' and its friends.
+  Run in the same manner as the copy script above.
+
+
+\end{enumerate}
+
+\begin{note}
+  The calibration display clients seem to affect the sync signal
+  received by the opti-track software.  You may have to restart the
+  framelock after calibrating the projectors.  See
+  section~\ref{framelock}.
+\end{note}
+
+
+
+
+File locations for the display clients are controlled on the
+``Advanced'' options page of the Display Manager.
+
+Most times you will not need to adjust any of these settings.  They
+are recorded here in case something goes wrong.
+
+\begin{enumerate}
+\item obj file is in DEI/SystemData/DefaultSystem/Config,
+  ControlPoint3DLocationOverride contains the coordinates of the
+  control points.
+
+\item Things to configure: RemoteOutputDirectoryName (directory only),
+  also Perspective SDK Mesh File Output Path and Orthographic [same].
+  Last two are complete path and file names.  These are redundant with
+  the remote output directory name, but need to be set redundantly.
+  [THIS DOES NOT SEEM NECESSARY]
+
+\item Camera settings: ISO 200, .125 sec, f/11.
+
+\item C:ScalableDisplay/ScalableServiceInformation has jpegs in it for
+  each projector.
+
+\item There is a mask available for the calibrating.
+\end{enumerate}
+
+
+
+
+
+
+
+
+\subsubsection{Digest camera data}
+
+\subsection{Location of POL files}
+
+The POL files are located in the cavedemo account, in ``scalable/cave.''
+
+
+Where are they installed?
+
+On OSCAR they are at: ~/cavedemo/scalable/cave
+
+
+\subsection{Scalable libraries}
+
+Pointer to Scalable documentation?
+
+mgt.oscar.ccv.brown.edu
+
+
+\subsubsection{Making a model}
+
+What constraints on the model?
+
+via blender, via kinect?
+
+On Win machine, logged in as last mohican (hawkeye), there is said to
+be a file with a modest amount of documentation about how to use and
+install obj files.  Lies, all lies!
+
+
+\subsubsection{Importing the model}
+
+How to get it read by the Scalable Display manager thing.
+
+John's zipfile hack.
+
+
+ScreenTypeOverride
+
+
+\section{Software}
+
+Libraries, APIs,
+
+
+\section{Construction}
+
+Knot for tying monofilament, ``Nanofil''
+
+Mirror suppliers
+
+
+\end{document}

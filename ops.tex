@@ -78,6 +78,75 @@ follow these steps:
 \end{enumerate}
 
 
+\section{Care of Nodes}
+
+The computers that run the yurt are 20 server-class machines, named
+cave001 through cave020.  They each have two network interfaces, so
+are addressable on the 172 and 192 networks.  The projector numbers
+correspond to the following cave nodes:
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Node} & \textbf{Projectors} \\ \hline
+cave001  &  \\
+cave002  &  \\
+cave003  &  \\
+cave004  &  \\
+cave005  &  \\
+cave006  &  \\
+cave007  &  \\
+cave008  &  \\
+cave009  &  \\
+cave010  &  \\
+cave011  & 38,39,40,41 \\
+cave012  & 44,45 \\
+cave013  & 46,47,48,49 \\
+cave014  &  \\
+cave015  &  \\
+cave016  &  \\
+cave017  &  \\
+cave018  &  \\
+cave019  & 42,43 \\
+cave020  & test \\
+\end{tabular}
+\end{center}
+
+Each cave node carries four NVidia GPUs, one for each projector.  The
+GPUs are each mapped to a different X windows display, so cave001 has
+cave001:0.0, cave001:0.1, cave001:0.2, and cave001:0.3.
+
+\subsection{X11}
+
+The X server is invoked in a locally written script called
+\texttt{cavedm.conf}.  This is where different command-line options
+can be specified.
+
+Do not modify the installed version of this file.  During the
+installation of the cave image, the init file found at
+\texttt{/gpfs/runtime/nvidia/cave-X11/cavedm.conf} is copied to
+\texttt{/etc/xinit}, where it is executed at boot time.
+
+
+To restart the X server on a node, log into that node as cavedemo, and
+run \texttt{killall unclutter}.
+
+
+\subsection{NVidia driver}
+
+To see details about the NVidia GPU, try the \texttt{nvidia-smi} command.
+
+You'll find all the installed drivers in
+\texttt{/gpfs/runtime/nvidia}.  There is a link to ``latest'' that
+will indicate which driver has actually been installed on the cave nodes.
+
+
+
+Look in rootimg
+
+
+Also look in /install/postscripts
+
+
 \section{Projectors}
 
 There are two documents we have from the projector manufacturer.  One
@@ -205,10 +274,8 @@ replacing them proactively.  Once the color calibration is functional,
 we will be keeping data about color change over the bulb lifetime and
 may change policy after analyzing that data.
 
-We have seven spare bulbs.  As bulbs pop, send them off to be
-relamped.
-
-We have two bulb suppliers at present:
+We are currently procuring bulbs from the manufacturer, but we have
+identified two alternate bulb suppliers at present:
 
 Relampit -- Tom Sullivan, Relampit, 120 Wilbur Place, Suite C,
 Bohemia, NY 11716, 631-244-0051x122, tsullivan@relampit.com, \$558
@@ -279,6 +346,10 @@ power outage or reboot.  Use this procedure to reset the frame lock.
 \item Run \texttt{nvidia-settings -c cave001:0}.  This should start up
   a GUI for you.
 
+\item In the left pane of the window, look to the bottom for ``frame
+  lock'' and click that.  You should see a long list of projectors
+  appear in the main window.
+
 \item Look in the bottom right of the window for a ``disable frame
   lock'' button.  Click it, wait, then click ``enable frame lock.''
   You'll see lots of green if it worked.
@@ -286,28 +357,9 @@ power outage or reboot.  Use this procedure to reset the frame lock.
 \end{enumerate}
 
 
+The nvidia-settings program is initialized with a startup file called
+\texttt{.nvidia-settings-rc}, currently in the cavedemo home directory.
 
-\section{Kiosk}
-
-The Kiosk is (sadly) a Windows machine.  There isn't a lot to say
-about it, but when it misbehaves and needs to be rebooted, use this
-procedure.
-
-\begin{enumerate}
-\item Remove the Opti-Track software dongle from the USB ports on the
-  back.  Remember which port it came from.  This dongle appears to
-  prevent the machine from booting properly.
-
-\item Reboot.
-
-\item Replace Opti-Track dongle.
-
-\item Restart tracking, pointer, and sound server software.
-
-\item Start Internet Explorer and make sure it's pointing at the Kiosk
-  web page.
-
-\end{enumerate}
 
 
 \section{Tracking, Heads and Pointers}
@@ -509,6 +561,42 @@ is within range.  Since it covers the room, assume the glasses do not
 turn themselves off.  To power off the glasses, hold the button down
 until the lenses go clear.
 
+\section{Kiosk and Demos}
+
+The Kiosk is (sadly) a Windows machine.  There isn't a lot to say
+about it, but when it misbehaves and needs to be rebooted, use this
+procedure.
+
+\begin{enumerate}
+\item Remove the Opti-Track software dongle from the USB ports on the
+  back.  Remember which port it came from.  This dongle appears to
+  prevent the machine from booting properly.
+
+\item Reboot.
+
+\item Replace Opti-Track dongle.
+
+\item Restart tracking, pointer, and sound server software.
+
+\item Start Internet Explorer and make sure it's pointing at the Kiosk
+  web page.
+
+\end{enumerate}
+
+The kiosk itself is a web page, hosted on dev09.
+% the virtual host caveweb1.oscar.ccv.brown.edu.
+
+\subsection{Demos}
+\label{Demos}
+
+Many of the demo programs use data assumed to be in the
+\texttt{/tmp/yurt-data} directories of the cave nodes.  There is a
+model directory in the cavedemo account, see
+\texttt{/users/cavedemo/data/model\_tmp}.  You can copy the
+\texttt{model\_tmp} directory contents to the node
+\texttt{/tmp/yurt-data} directories with the
+\texttt{copy\_data\_to\_tmp script} in the.
+
 
 \section{Scalable software, Warping and Blending}
 
@@ -544,26 +632,33 @@ right doors.
 \item Turn on relevant projectors, plug in camera.  Make sure the camera
   appears as a USB device on the console computer.  Set up the camera
   so it is looking at the wall to be calibrated.  The camera should be
-  set on Manual exposure.
+  set on Manual exposure.\footnote{The camera occasionally loses the
+    connection with the Windows machine.  You'll know when the
+    Scalable Display Manager fails to operate the camera shutter.  At
+    the moment, there is no known cure besides rebooting the kiosk
+    machine.} 
 
 \item Start Scalable display clients on each of the relevant nodes.
-  This is done by executing RunDisplayClient.sh on each node.  There
-  is a ``Calibrate'' icon in the System window of the kiosk that
-  will start the display clients on all the nodes.
+  This is done by executing RunDisplayClient.sh on each node.  For
+  convenience, there is a ``Calibrate'' icon in the System window of
+  the kiosk that will start the display clients on all the nodes.
 
 \newcommand{\bs}{$\backslash$}
-\item The configurations are kept on the kiosk machine, in the
-  directory \hbox{\texttt{C:\bs Program Files\bs ScalableDisplay\bs
-      DEI\bs SystemData }}.  You will find several directories in
-  there, called ``DefaultSystem.front'' and so on.  These need to be
-  copied into ``DefaultSystem.''  Check out the
-  ``winders/cave/scripts'' directory, where you'll find cygwin scripts
-  called ``restore\_front.sh'' and so on.  Run the appropriate one of
-  those scripts to copy all the calibration files into the right place.
+\item The configurations are kept on the kiosk machine, in zip files
+  within the directory \hbox{\texttt{C:\bs cave\bs scalable\_configs}}.  You will find several zips in
+  there, called ``DefaultSystem\_Ceiling.zip'' and so on.  These need to be
+  unpacked into \hbox{\texttt{C:\bs Program Files\bs
+      ScalableDisplay\bs DEI\bs SystemData}}.  On the kiosk Desktop,
+  you'll find a ``Scripts'' directory with clickable Windows scripts
+  you can use that will unpack the right zip file for you.  Click on
+  the appropriate one of 
+  those scripts to copy all the calibration files into the right
+  place and start up the Scalable Display Manager.
 
-\item Start the Scalable Display Manager from the icon on the kiosk
-  machine desktop.  Check that the display clients your wall uses are
-  green and on the right. Click ``Next'' or ``Camera Display.''
+\item With the SDM running, use the ``Display Clients'' tab to choose
+  which display clients you are talking to.  Check that the clients
+  used by the screen you are calibrating are 
+  green and on the right. 
 
   \begin{center}
   \begin{tabular}{ll}
@@ -576,22 +671,55 @@ right doors.
   \end{tabular}
 \end{center}
 
+The display client window does not scroll.  If you don't see the right
+client on the left-hand list, you can specify the IP address directly
+into a box in the right column.  The Display Client nodes you want are
+numbered 172.20.160.X, where X is the number of the cave node.
 
-\item Projectors display.  Ignore this.  The arrangement of the
-  projectors in this display is meaningless, and the checkboxes on
-  each projector do not work.  Click ``Next'' in the lower right
-  corner, and move on to the camera display.
+\item ``Projectors'' display.  Your projectors should be in a 1xn row in
+  order to make the calibration cursors appear in a later step.  All
+  the projectors you see should have the little box checked.  Click
+  ``Next'' in the lower right corner, and move on to the camera
+  display.
 
-\item Camera display.  Set the exposure for the camera down to about
-  .25s, then click on ``Gather data'' and watch the (not very
+\item ``Cameras'' display.  Set the exposure for the camera down to about
+  .25s, then click on ``Begin Data Collection'' and watch the (not very
   interesting) light show.  The computer will turn on each projector
   full white, then go back and do them all with little blocks, and
   with a central image that defines the orientation of the
-  screen.
+  screen.  Click ``Next'' in the bottom right corner to advance.
 
-\item Screen position.  Set the control points for the calibration.
-  You can set these on the screen on a camera image, or move around
-  cursors that appear on the walls.
+\begin{note}
+  When calibrating the ceiling, you will need to do it twice.
+  Calibrate the ceiling up to this point (including the ``Update
+  Calibration'' button on the next page), and then run the
+  ``Create\_Ceiling\_Masks'' script in the Desktop ``Scripts''
+  directory and do the ``Cameras'' step again.
+\end{note}
+
+\item Screens tab.  Use this to confirm the shape of the screen looks
+  more or less the way you anticipate it will look, and then click
+  ``Next'' and move on.
+
+\item ``Image Boundary'' tab.  Use this to set the control point
+  positions for the calibration.  There are two methods, the first
+  involving moving cursors around the screen itself, and the second
+  looking at a camera image of the screen.  To use the camera method,
+  go back to the Camera tab, and increase the exposure time of the
+  camera (about 5 seconds works well) then come back to this tab and
+  select ``Pick boundary points within camera images.''  Use the mouse
+  to drag the control point positions onto the screen image.
+
+  For the ceiling calibration, this is probably the preferred method,
+  since the outside control points at the top of the screen (numbers 1
+  and 3) seem best when located a few inches outside the physical
+  screen.  (That edge of the screen is convex, so if you put the
+  points exactly on the screen corners, the outside edge has no image
+  on it halfway between the corners.)
+
+\item To use the cursor-on-wall method, click ``Position points along
+  screen boundary.''  Click on each of the points, and maneuver it
+  into place by either dragging with the mouse or using the arrow keys.
 
   \begin{description}
 
@@ -610,11 +738,10 @@ right doors.
 
   \end{description}
 
-\begin{note}[BUG] Linux display client should display a set of cursors for
-  setting the control points, but they do not because the fonts are
-  not loaded.  Could use laser
-  pointers to spike the point?
-\end{note}
+  If the control points are placed in some way that the software deems
+  impossible (maybe you have the order incorrect, for example), the
+  software will respond with an error 79, and an incomprehensible
+  message about not being able to write the ScalableDisplay.ol0 file.
 
 \item Perspective display.  All the walls are defined with coordinates
   that place them in the front of the room.  After calibration, these
@@ -734,5 +861,29 @@ Knot for tying monofilament, ``Nanofil''
 
 Mirror suppliers
 
+
+
+\section{Granoff Cave}
+
+This section of this document is about the old VR installation, herein
+called the ``cave''
+
+\subsection{Startup}
+
+
+Start the various servers from the start menu, not from the desktop.
+
+The VRPN server will start up, but might not start sending frames if
+an OpenGL program is not running somewhere.  Try starting it while the
+``Align Screen'' (a simple OpenGL program that uses no input)
+application is running.
+
+
+\subsubsection{Frame lock}
+
+On a restart, you should check to see if the frame lock is still set.
+Log in to the caveserver as cavedemo, start nvidia-settings -c
+cave5:0, and then add cave5 in the framelock panel.   See
+  section~\ref{framelock} for more.
 
 \end{document}

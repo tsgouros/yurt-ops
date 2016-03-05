@@ -1,0 +1,61 @@
+\documentclass[11pt]{article}
+\usepackage{mathptmx}
+\usepackage{verbatim}
+\usepackage[margin=1.25in]{geometry}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{url}
+\usepackage[colorlinks,
+            bookmarks=true,
+            hyperindex,
+            linkcolor={blue},
+            pdftitle={YURT Operations Manual}]{hyperref}
+
+\newsavebox{\notebox}
+\newenvironment{note}[1][Note]{\begin{lrbox}{\notebox}%
+    \begin{minipage}{0.9\columnwidth}\textcolor{red}{\textbf{#1}:~}}%
+    {\end{minipage}\end{lrbox}\begin{center}\setlength{\fboxsep}{8pt}%
+    \fbox{\usebox{\notebox}}\end{center}}
+
+
+% \newenvironment{note}[1][Note]{%
+%   \begin{center}\setlength{\fboxsep}{10pt}
+%   \framebox\bgroup\begin{minipage}{0.9\columnwidth}\textbf{#1}:~}%
+%   {\end{minipage}\egroup\end{center}}
+
+
+%{\textbf{#1}}{}
+
+\newcommand{\yurt}{YURT}
+
+\begin{document}
+
+\title{Brown University YURT Operations Manual}
+\author{Tom Sgouros}
+\maketitle
+
+\tableofcontents
+
+\section{Introduction: Who is this manual for?}
+
+There are two sections to this manual.  The first is for users who
+simply wish to run software demos in the \yurt.  These are programs
+that are either packaged as kiosk buttons or as scripts.
+
+The other class of users is people who want to develop software to run
+in the \yurt.  These people should already have a CCV user account that
+belongs to the `graphics' group.
+
+\section{Running the \yurt}
+
+\subsection{Running Demos with the Kiosk}
+
+The easiest way to run anything in the \yurt is with the ``kiosk,''
+the graphical user interface available on the touch-screen computer at
+the \yurt entrance.
+
+
+\section{Developing \yurt Software}
+
+
+\end{document}

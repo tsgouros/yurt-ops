@@ -26,6 +26,11 @@
 
 %{\textbf{#1}}{}
 
+\newcommand{\yurt}{YURT}
+\newcommand{\cmd}[1]{\texttt{#1}}
+\newcommand{\longcommand}[1]{-\rule{0pt}{1pt}-#1}
+\newcommand{\argle}[1]{[#1]}
+
 \begin{document}
 
 \title{Brown University YURT Operations Manual}
@@ -53,7 +58,7 @@ those gaps so the gratings cannot be left in place.
 
 Inside the eastern access door to the under-floor area, there is a
 platform with two long legs and two short legs. It is meant to sit
-behind the front wall of the yurt, with two short legs resting on the
+behind the front wall of the \yurt, with two short legs resting on the
 back of the floor structure and the two long legs reaching down to the
 actual room floor.  From this platform, you can reach the bottom of
 the catwalk, or the top of the upper mirrors.
@@ -80,36 +85,41 @@ follow these steps:
 
 \section{Care of Nodes}
 
-The computers that run the yurt are 20 server-class machines, named
-cave001 through cave020.  They each have two network interfaces, so
-are addressable on the 172 and 192 networks.  The projector numbers
-correspond to the following cave nodes:
+The computers that run the \yurt are 20 server-class machines, named
+cave001 through cave020.  They each have 128G memory, and two network
+interfaces, so are addressable as 172.20.160.X and 192.168.160.X,
+where X is the number of the node, between 1 and 20.  The projector
+numbers correspond to the following cave nodes:
 
 \begin{center}
 \begin{tabular}{ll}
 \textbf{Node} & \textbf{Projectors} \\ \hline
-cave001  &  \\
-cave002  &  \\
-cave003  &  \\
-cave004  &  \\
-cave005  &  \\
-cave006  &  \\
-cave007  &  \\
-cave008  &  \\
-cave009  &  \\
-cave010  &  \\
-cave011  & 38,39,40,41 \\
-cave012  & 44,45 \\
-cave013  & 46,47,48,49 \\
-cave014  &  \\
-cave015  &  \\
-cave016  &  \\
-cave017  &  \\
-cave018  &  \\
-cave019  & 42,43 \\
-cave020  & test \\
+cave001 & 34,35,36,37 \\
+cave002 & 30,31,32,33 \\
+cave003 & 26,27,28,29 \\
+cave004 & 22,23,24,25 \\
+cave005 & 18,19,20,21 \\
+cave006 & 14,15,16,17 \\
+cave007 & 10,11,12,13 \\
+cave008 & 7,8,9 \\
+cave009 & 3,4,5,6 \\
+cave010 & 0,1,2 \\
+cave011 & 38,39,40,41 \\
+cave012 & 44,45 \\
+cave013 & 46,47,48,49 \\
+cave014 & 50,51,52 \\
+cave015 & 53,54,57,58 \\
+cave016 & 55,56,59,60 \\
+cave017 & 61,62,63,66 \\
+cave018 & 64,65,67,68 \\
+cave019 & 42,43 \\
+cave020 & test \\
 \end{tabular}
 \end{center}
+
+Cave node 20 is a spare computer, and is also used to power projectors
+in the testing area.  The test projector port can be addressed as
+projector 70.
 
 Each cave node carries four NVidia GPUs, one for each projector.  The
 GPUs are each mapped to a different X windows display, so cave001 has
@@ -118,33 +128,29 @@ cave001:0.0, cave001:0.1, cave001:0.2, and cave001:0.3.
 \subsection{X11}
 
 The X server is invoked in a locally written script called
-\texttt{cavedm.conf}.  This is where different command-line options
+\cmd{cavedm.conf}.  This is where different command-line options
 can be specified.
 
 Do not modify the installed version of this file.  During the
 installation of the cave image, the init file found at
-\texttt{/gpfs/runtime/nvidia/cave-X11/cavedm.conf} is copied to
-\texttt{/etc/xinit}, where it is executed at boot time.
-
+\cmd{/gpfs/runtime/nvidia/cave-X11/cavedm.conf} is copied to
+\cmd{/etc/xinit}, where it is executed at boot time.
 
 To restart the X server on a node, log into that node as cavedemo, and
-run \texttt{killall unclutter}.
+run \cmd{killall unclutter}.
 
 
 \subsection{NVidia driver}
 
-To see details about the NVidia GPU, try the \texttt{nvidia-smi} command.
+To see details about the NVidia GPUs on a cave node, use the
+\cmd{nvidia-smi} command.  (Only works for the cavedemo user.)
 
 You'll find all the installed drivers in
-\texttt{/gpfs/runtime/nvidia}.  There is a link to ``latest'' that
+\cmd{/gpfs/runtime/nvidia}.  There is a link to ``latest'' that
 will indicate which driver has actually been installed on the cave nodes.
 
-
-
-Look in rootimg
-
-
-Also look in /install/postscripts
+Upgrades to the NVidia drivers should be done with care.  Upgrading
+from v313 to v361 caused boot failures on two nodes.
 
 
 \section{Projectors}
@@ -152,10 +158,7 @@ Also look in /install/postscripts
 There are two documents we have from the projector manufacturer.  One
 is the specification for the projectors we have, and the other is a
 repair manual for a related species of projector.  They are stored in
-\texttt{/home/tsgouros/cave-documents}.
-
-In process, there is also a repair manual, being assembled by the
-distributor.
+\cmd{/home/tsgouros/cave-documents}.
 
 
 \subsection{Location}
@@ -193,8 +196,41 @@ used for machine control of projectors in the repair station.
 \subsection{Operation}
 \label{projector-operation}
 
-Turn projectors on and off with the pjcontrol command.  You can
-identify a projector by number individually, or in a list or range: 
+Turn projectors on and off with the pjcontrol command.  
+The pjcontrol command also is used to configure the projector color
+and brightness, and to log repairs and track inventory.  The pjcontrol
+script is part of the \cmd{cave-utils} module.  Load this with:
+
+\begin{verbatim}
+$ load module cave-utils
+\end{verbatim}
+
+You can see a help message with \cmd{pjcontrol \longcommand{help}}.  
+
+\subsubsection{pjcontrol}
+
+Synopsis:
+
+\begin{verbatim}
+pjcontrol.py [-h] [-s [SERIALNO]] [--clearErrs] [-d [MFGDATE]] [-a]
+             [-R] [-G]
+             [-r [{none,bulb,ballast,lens,board,install,uninstall,ship}]]
+             [-l [{none,long,short}]]
+             [-p [{none,spare,broken,installed,returned}]]
+             [-c [COMMENT]]
+             [projs] ...
+\end{verbatim}
+
+The pjcontrol script has two forms of usage, reference by projector
+number, and reference by serial number.  Reference by projector number
+looks like the following.   
+
+\begin{verbatim}
+$ pjcontrol projs command
+\end{verbatim}
+
+You can identify a projector by number individually, or in a list or
+range:
 
 \begin{verbatim}
 $ pjcontrol 53 on
@@ -202,15 +238,165 @@ $ pjcontrol 33,34,35 on
 $ pjcontrol 33-35 off
 \end{verbatim}
 
-The pjcontrol command also is used to configure the projector color
-and brightness, and to log repairs and track inventory.  Sign in as
-cavedemo and type ``pjcontrol --help'' for more detail.
+The commands available are in the list below.  Unique abbreviations
+are allowed. Some of these arguments require further args. For example
+'install' requires a serial number, switch name and port, and
+location. And 'repair' needs a serial number.
+
+\begin{description}
+\item[on] Turns projector on.  No arguments.
+
+\item[off] Turns projector off.  No arguments.
+
+\item[power] Returns the power status (0 = standby, 1 = warm up, 2 = imaging,
+3 = cooling, 4 = error)
+
+\item[version] Returns a software version string for the projector firmware.
+
+\item[mode] Return the operation mode (0 = mono, 2 = stereo)
+
+\item[mono] Set the operation mode to mono (s3d.mode = 0).
+
+\item[stereo] Set the operation mode to stereo (s3d.mode = 2).
+
+\item[lamp] Return the lamp mode (0 = standard, 1 = economy).
+
+\item[eco] Set the lamp mode to economy.
+
+\item[std] Set the lamp mode to standard.
+
+\item[hour] Return the lamp hour counter value.
+
+\item[error] Print the error log.
+
+\item[raw] Send a raw command to the projector.  See the projector
+  manuals for a list of the commands.  A command like the following
+  sets the red gain to 125.
+
+\begin{verbatim}
+$ pjcontrol 13 raw red.gain = 125
+\end{verbatim}
+  
+\item[repair] Log a repair.  (Please just use a single projector
+  number for this command.)  This command needs a repair type and a
+  double-quoted comment.
+
+\item[install] Install a projector at a given switch location.  Use it
+  like this when you're replacing a projector:
+
+\begin{verbatim}
+$ pjcontrol 42 install WACY00041
+\end{verbatim}
+  
+  Use it like this if you have to replace the switch names as well:
+
+\begin{verbatim}
+$ pjcontrol 42 install WACY00041 switch03 1014 wall
+\end{verbatim}
+  
+ Where the three additional arguments represent the name of the serial
+ server switch, the number on the serial server that connects to the
+ right projector, and an arbitrary screen name.
+
+
+\item[uninstall] Takes a serial number.
+
+\item[report] Provide a report (from the projector database.
+
+\item[gather] Gather the variables that will be sued in a report.
+
+
+\end{description}
+
+Reference by serial number looks like this:
+
+\begin{verbatim}
+$ pjcontrol -s WACY00060 -r "bulb" -c "replaced bulb with s/n WYL889214"
+\end{verbatim}
+
+Note that you cannot reference multiple projectors by serial number
+wild cards.  The serial numbers may be parial.  The projector
+referenced with a partial serial number is the first one in the list
+that matches the given fraction of a number.
+
+\begin{description}
+\item[-h, \longcommand{help}] Show a help message and exit.
+\item[-s \argle{SERIALNO}, \longcommand{serial} \argle{SERIALNO}]
+                        A projector serial number (or fraction
+                        thereof).
+\item[\longcommand{clearErrs}]   Clear the error log for a projector.
+\item[-d \argle{MFGDATE}, \longcommand{date} \argle{MFGDATE}]
+                        The projector serial number stickers have a
+                        manufacturing date on them. Record it here, in the
+                        format 2012-04-17.
+\item[-a, \longcommand{add}] Add a projector to the
+                        database. Requires that you specify a serial number
+                        and date and optional lens type, and nothing else.
+\item[-R, \longcommand{report}]     Produce a summary report about a projector. Without a
+                        serial number specified, produce a summary report
+                        about all projectors and all projector controls.
+                        Ignores all other arguments.
+\item[-G, \longcommand{gather}]    Run through all the projectors gathering all their
+                        data. Ignores all other arguments.
+\item[-r \argle{REPAIRTYPE}, \longcommand{repairType} \argle{REPAIRTYPE}]
+                        Records a repair. Use this to
+                        specify the type of repair, and do not forget to
+                        include a comment.  The possible repair types
+                        are bulb, ballast, lens, board, install,
+                        uninstall, ship.  You can also use ``none'' to
+                        insert a comment into the repair log.
+\item[-l \argle{LENSTYPE}, \longcommand{lens} \argle{LENSTYPE}]
+                        Sets type of lens (long, short, none) for the given
+                        serial number.
+\item[-p \argle{PURPOSE}, \longcommand{purpose} \argle{PURPOSE}]
+                        Record the current purpose of the projector (spare,
+                        broken, installed, returned).
+\item[-c \argle{COMMENT}, \longcommand{comment} \argle{COMMENT}]
+                        Commentary about the repair.  Must be quoted
+                        if it contains more than one word.
+
+                      \end{description}
+                      
+\subsubsection{pjlog}
+
+The pjcontrol command logs its usage at cave-utils/yurt/log.
+You can see the last few log entries with the pjlog command.
+
+\subsubsection{pjreport}
+
+Creates and stores a full report of the state of the projector
+database.  This should be run at least weekly.
+
+\subsubsection{projd}
+
+In order to address deficiencies in the Scalable Display Manager
+software, there is a system by which projector commands can be sent to
+an IP address, and forwarded to a specific projector.  The projd
+command listens on a set of ports, and forwards the connections to the
+projector correponding to that port.
+
+The projd script calls the projd.py Python script, which defines a
+projChats object that takes two numbers as an argument:
+
+\begin{verbatim}
+projChats(address, projector)
+\end{verbatim}
+
+Where \cmd{address} is the last segment of an IP address that begins
+with 192.168.160. and projector is the number of the projector to be
+controlled at this address.  The projd.py command uses the
+pjcontrol-raw script, which is not to be used otherwise.
+
+\subsubsection{pjexpect}
+
+This is part of the pjcontrol script operation and is not meant to be
+used independently.
 
 
 \subsection{Inventory and Logs}
 \label{logging}
 
-The electronic log is currently held in the etc directory of the
+The projector database is currently held in the etc directory of the
 cavedemo account.  It is an anydbm file, readable with the pjcontrol
 python script stored in the cavedemo bin directory.
 
@@ -251,13 +437,14 @@ This is only effective when all the projectors are turned on.
 \end{note}
 
 This should be run weekly, with a report run and recorded as often.
-
+Use \cmd{pjreport} (with no arguments) to create and store a report for
+the current date and time.
 
 \subsection{Maintenance and repairs}
 
 So far as we currently understand it, the only maintenance required is
 the replacement of bulbs.  Policy is to replace them when they blow
-out, not to anticipate this.
+out, not to anticipate their demise.
 
 All maintenance and repair actions should be recorded on the paper
 maintenance log.  The actions relevant to a specific projector will be
@@ -277,16 +464,19 @@ may change policy after analyzing that data.
 We are currently procuring bulbs from the manufacturer, but we have
 identified two alternate bulb suppliers at present:
 
-Relampit -- Tom Sullivan, Relampit, 120 Wilbur Place, Suite C,
+\begin{description}
+
+\item[Relampit] Contact: Tom Sullivan, Relampit, 120 Wilbur Place, Suite C,
 Bohemia, NY 11716, 631-244-0051x122, tsullivan@relampit.com, \$558
 new, \$495 relamp.  Warranty runs 90 days from installation, free
 shipping.
 
-Greenleigh and Wong -- Tom Greenleigh, Greenleigh Wong Lamps, 1680
+\item[Greenleigh and Wong] Contact: Tom Greenleigh, Greenleigh Wong Lamps, 1680
 Navajo Road, Ground Floor, Ogden UT, 84403, 801-475-7800,
 tom@gwlamps.com. \$535 new, \$361 relamp.  Warranty runs 180 days from
 shipping.
 
+\end{description}
 
 
 \subsubsection{Shipping for repair}
@@ -335,20 +525,21 @@ stereo is different every way you look.
 
 The projectors are synchronized electronically with daisy-chain
 connections among the cave nodes which serve to synchronize the
-graphics cards.  Apparently the settings are not durable through a
-power outage or reboot.  Use this procedure to reset the frame lock.
+graphics cards.  The settings do not persist through a restart of the
+cave X servers (which includes power interruptions or reboots).  Use
+this procedure to reset the frame lock.
 
 \begin{enumerate}
 
 \item Log in as cavedemo.  Use one of the linux terminals in the lab,
   or ssh -X to one of the cave nodes.
 
-\item Run \texttt{nvidia-settings -c cave001:0}.  This should start up
+\item Run \cmd{nvidia-settings -c cave001:0}.  This should start up
   a GUI for you.
 
-\item In the left pane of the window, look to the bottom for ``frame
-  lock'' and click that.  You should see a long list of projectors
-  appear in the main window.
+\item In the left pane of the window, look to the bottom for
+  ``framelock'' and click that.  You should see a long list of
+  projectors appear in the main window.
 
 \item Look in the bottom right of the window for a ``disable frame
   lock'' button.  Click it, wait, then click ``enable frame lock.''
@@ -358,8 +549,9 @@ power outage or reboot.  Use this procedure to reset the frame lock.
 
 
 The nvidia-settings program is initialized with a startup file called
-\texttt{.nvidia-settings-rc}, currently in the cavedemo home directory.
-
+\cmd{.nvidia-settings-rc}, currently in the cavedemo home
+directory.  We have not had good results editing this file directly;
+editing configuration should be done with the GUI.
 
 
 \section{Tracking, Heads and Pointers}
@@ -368,9 +560,9 @@ The nvidia-settings program is initialized with a startup file called
 \label{opti-track}
 
 \begin{note}
-  The calibration display clients seem to affect the sync signal
-  received by the opti-track software.  You may have to restart the
-  framelock after calibrating the projectors.  See
+  The Scalable calibration display clients occasionally seem to affect
+  the sync signal received by the opti-track software.  You may have
+  to restart the framelock after calibrating the projectors.  See
   section~\ref{framelock}.
 \end{note}
 
@@ -382,15 +574,17 @@ is on the tracked glasses, or the wand, the system can pinpoint that
 constellation and thus the gaze or the hand of the user.
 
 
+\begin{note}
+  The Opti-Track license dongle seems to interfere with the booting of
+  the kiosk machine.  Remove the dongle to reboot and reinsert it when
+  the computer is safely up and running.
+\end{note}
 
 \subsubsection{Starting the Opti-Track}
 
 Double click on the ``Motive'' software icon.  When it comes up it
 will ask whether you want to open an existing project.  Say yes, and
 then choose the ``Cave'' project, usually at the bottom of the list.
-
-
-How to start / restart?
 
 \subsubsection{Calibrating the Opti-Track}
 
@@ -425,7 +619,7 @@ To calibrate the Opti-Track system, start it up as above, then click
 
 \item Click ``ground plane''
 
-\item The actual zero of the yurt is four feet above the ground plane,
+\item The actual zero of the \yurt is four feet above the ground plane,
   so you'll have to adjust the Y dimension of the calibration to equal
   -1219 (millimeters).  You should see the lighting icons drop down in
   the display pane.
@@ -442,46 +636,53 @@ stored and recognized by the Opti-Track software.  Sometimes you'll
 want to replace these items, or the metal may become bent and the
 system will not recognize it any more.
 
+To replace an object in the calibration, click on the project
+description, then
+
 Steps for adding/replacing an object.
 
 
 \subsubsection{3D printer patterns}
 
-Pattern for Johannes's glasses holder thing?
-
-
+There are a variety of 3D print patterns for various \yurt accessories
+found in the cavedemo data directory, in the \cmd{yurt-tools} directory.
 
 
 \subsection{Polhemus tracking}
 
+The Polhemus (magnetic) tracking system is not currently installed.
 
-Charging, location of transmitter, how is it connected and powered?
+% Charging, location of transmitter, how is it connected and powered?
 
-Is there software that needs to be started/restarted?
-
-Sync is received from projector 11 (because that's the one closest to
-the console machine).
-
+% Is there software that needs to be started/restarted?
 
 \subsection{Pointer}
+
+The location of the wand is controlled by the Opti-track software, but
+the button presses and joystick operation takes a different route.
+
+The wand communicates with the system via a dongle on the kiosk
+computer.  If the wand's VRPN server is running, the button presses
+are reported as VRPN events, using the key below.
+
+\begin{center}
+\includegraphics[width=0.6\columnwidth]{yurt-wand-controller.jpg}
+\end{center}
 
 Don't forget to restart the wand's VRPN server if the dongle gets unplugged.
 
 
-There is a button on the joystick dongle.  Press it while inserting
-the button to put it into the correct mode for YURT operation.
+To plug in the dongle, look for a small button on its end.  Press the
+button while inserting the dongle into the kiosk computer's USB port.
 
 Wand must sometimes be ``paired'' with the dongle.  Sometimes this
 happens on battery changes, and it definitely happens when the wand is
 swapped for repair.  The wand will complain that it is not paired by
 flashing its blue power light.  To pair, press the button on the
 dongle and within eight seconds, press both the power button and the
-select button (the button opposite the power button).  This is an
+select button (the button opposite the power button on the wand).  This is an
 undocumented feature of the wand, so these instructions are merely
-provisional.
-
-
-
+provisional, but this appears to work.
 
 
 \section{Glasses, Stereo}
@@ -489,7 +690,7 @@ provisional.
 The Volfoni glasses are operated by an RF signal generated by a small
 transmitter plugged into the sync output of projector 11.  (Bottom
 left on the front wall.)  It is powered by a controllable plug strip,
-so that it can be turned off then the Yurt is not in use.  This allows
+so that it can be turned off then the \yurt is not in use.  This allows
 the glasses to time out and power down.
 
 
@@ -514,7 +715,7 @@ and click ``Apply'' at the top of that column of the screen.
 The kiosk has a program on it for checking the stereo configuration
 (on the System tab).  It alternates red and green fields for the left
 and right eyes.  When you hold the glasses up against any part of the
-Yurt screen, one lens will appear red and the other green.  When the
+\yurt screen, one lens will appear red and the other green.  When the
 glasses look like the image of the glasses in the icon, the stereo is
 configured correctly.  
 
@@ -590,12 +791,12 @@ The kiosk itself is a web page, hosted on dev09.
 \label{Demos}
 
 Many of the demo programs use data assumed to be in the
-\texttt{/tmp/yurt-data} directories of the cave nodes.  There is a
+\cmd{/tmp/yurt-data} directories of the cave nodes.  There is a
 model directory in the cavedemo account, see
-\texttt{/users/cavedemo/data/model\_tmp}.  You can copy the
-\texttt{model\_tmp} directory contents to the node
-\texttt{/tmp/yurt-data} directories with the
-\texttt{copy\_data\_to\_tmp script} in the.
+\cmd{/users/cavedemo/data/model\_tmp}.  You can copy the
+\cmd{model\_tmp} directory contents to the node
+\cmd{/tmp/yurt-data} directories with the
+\cmd{copy\_data\_to\_tmp script} in the.
 
 
 \section{Scalable software, Warping and Blending}
@@ -609,11 +810,11 @@ jostled or vibrate to a different position.
 \subsection{License}
 
 The scalable license file should be kept in the cavedemo z: folder,
-under the ``scalable'' directory.  Look for a .licx file.
+under the \cmd{scalable} directory.  Look for a .licx file.
 
 \subsection{Calibrating the software}
 
-Calibrating a wall of the yurt involves pointing a camera at the wall
+Calibrating a wall of the \yurt involves pointing a camera at the wall
 and running the calibration software.  The software illuminates the
 projectors one at a time, and notes its position, including the edges.
 This is used to calculate the zones in which the projector images
@@ -645,11 +846,11 @@ right doors.
 
 \newcommand{\bs}{$\backslash$}
 \item The configurations are kept on the kiosk machine, in zip files
-  within the directory \hbox{\texttt{C:\bs cave\bs scalable\_configs}}.  You will find several zips in
-  there, called ``DefaultSystem\_Ceiling.zip'' and so on.  These need to be
-  unpacked into \hbox{\texttt{C:\bs Program Files\bs
+  within the directory \hbox{\cmd{C:\bs cave\bs scalable\_configs}}.  You will find several zips in
+  there, called \cmd{DefaultSystem\_Ceiling.zip} and so on.  These need to be
+  unpacked into \hbox{\cmd{C:\bs Program Files\bs
       ScalableDisplay\bs DEI\bs SystemData}}.  On the kiosk Desktop,
-  you'll find a ``Scripts'' directory with clickable Windows scripts
+  you'll find a \cmd{Scripts} directory with clickable Windows scripts
   you can use that will unpack the right zip file for you.  Click on
   the appropriate one of 
   those scripts to copy all the calibration files into the right
@@ -756,13 +957,13 @@ numbered 172.20.160.X, where X is the number of the cave node.
 
 \item After successful calibration, the output POL files must be
   renamed and distributed to their final locations.  There are a set
-  of scripts in the cavedemo directory ``winders/cave/scripts''
-  called ``copy\_front.sh'' and the like.  These are to be executed in
+  of scripts in the cavedemo directory \cmd{winders/cave/scripts}
+  called \cmd{copy\_front.sh} and the like.  These are to be executed in
   a cygwin window on the kiosk (Windows) machine, where they can be
-  found at ``/cygdrive/z/winders/cave/scripts.''
+  found at \cmd{/cygdrive/z/winders/cave/scripts.}
 
 \item Backup a successful calibration by running the script (in the
-  same directory) called ``backup\_front\_wall.sh'' and its friends.
+  same directory) called \cmd{backup\_front\_wall.sh} and its friends.
   Run in the same manner as the copy script above.
 
 
@@ -814,7 +1015,7 @@ are recorded here in case something goes wrong.
 
 \subsection{Location of POL files}
 
-The POL files are located in the cavedemo account, in ``scalable/cave.''
+The POL files are located in the cavedemo account, in \cmd{scalable/cave}
 
 
 Where are they installed?

@@ -4,6 +4,7 @@
 \usepackage[margin=1.25in]{geometry}
 \usepackage{graphicx}
 \usepackage{color}
+\usepackage{xspace}
 \usepackage{url}
 \usepackage[colorlinks,
             bookmarks=true,
@@ -26,8 +27,11 @@
 
 %{\textbf{#1}}{}
 
-\newcommand{\yurt}{YURT}
-\newcommand{\cmd}[1]{\texttt{#1}}
+\newcommand{\yurt}{YURT\xspace}
+\newcommand{\cmd}[1]{\texttt{#1}\xspace}
+\newcommand{\dir}[1]{\textit{#1}\xspace}
+\newcommand{\menu}[1]{``#1''\xspace}
+\newcommand{\button}[1]{\textsf{#1}\xspace}
 \newcommand{\longcommand}[1]{-\rule{0pt}{1pt}-#1}
 \newcommand{\argle}[1]{[#1]}
 
@@ -343,7 +347,7 @@ that matches the given fraction of a number.
                         specify the type of repair, and do not forget to
                         include a comment.  The possible repair types
                         are bulb, ballast, lens, board, install,
-                        uninstall, ship.  You can also use ``none'' to
+                        uninstall, ship.  You can also use \cmd{none} to
                         insert a comment into the repair log.
 \item[-l \argle{LENSTYPE}, \longcommand{lens} \argle{LENSTYPE}]
                         Sets type of lens (long, short, none) for the given
@@ -436,11 +440,17 @@ database.
 This is only effective when all the projectors are turned on.
 \end{note}
 
-This should be run weekly, with a report run and recorded as often.
-Use \cmd{pjreport} (with no arguments) to create and store a report for
-the current date and time.
+This should be run weekly, with a report run and recorded at least as
+often.  Use \cmd{pjreport} (with no arguments) to create and store a
+report for the current date and time.
 
 \subsection{Maintenance and repairs}
+
+\begin{note}[Note]
+All changes to the projectors, whether it be repairs or maintenance,
+bulb replacement or guts, should be logged on the repair log clipboard
+hanging on the tool shelf.
+\end{note}
 
 So far as we currently understand it, the only maintenance required is
 the replacement of bulbs.  Policy is to replace them when they blow
@@ -538,11 +548,11 @@ this procedure to reset the frame lock.
   a GUI for you.
 
 \item In the left pane of the window, look to the bottom for
-  ``framelock'' and click that.  You should see a long list of
+  \menu{Framelock} and click that.  You should see a long list of
   projectors appear in the main window.
 
-\item Look in the bottom right of the window for a ``disable frame
-  lock'' button.  Click it, wait, then click ``enable frame lock.''
+\item Look in the bottom right of the window for a \button{Disable frame
+  lock} button.  Click it, wait, then click \button{Enable frame lock}.
   You'll see lots of green if it worked.
 
 \end{enumerate}
@@ -584,12 +594,12 @@ constellation and thus the gaze or the hand of the user.
 
 Double click on the ``Motive'' software icon.  When it comes up it
 will ask whether you want to open an existing project.  Say yes, and
-then choose the ``Cave'' project, usually at the bottom of the list.
+then choose the \menu{Cave} project, usually at the bottom of the list.
 
 \subsubsection{Calibrating the Opti-Track}
 
 To calibrate the Opti-Track system, start it up as above, then click
-``Layout'' and choose the calibration option from the drop-down menu.
+\menu{Layout} and choose the calibration option from the drop-down menu.
 
 \begin{enumerate}
 
@@ -601,7 +611,7 @@ To calibrate the Opti-Track system, start it up as above, then click
 \item Make sure that all the cameras are accounted for and reporting
   properly in the list on the left of the window.
 
-\item Click ``start wanding'' and start waving the wand around slowly
+\item Click \button{start wanding} and start waving the wand around slowly
   up and down.  The cameras have some feedback capacity built into
   their lights.  You'll see the cameras near you turn green as they
   are satisfied, then move over nearer another not-yet-green camera.
@@ -609,7 +619,7 @@ To calibrate the Opti-Track system, start it up as above, then click
 \item Eventually the software will tell you it has enough data for a
   good (or very good) calibration, at which point you can stop.
 
-\item Click ``calculate''
+\item Click \button{calculate}.
 
 \item Set the ground plane thing on the floor.  The origin of the cave is on
   the seam of the true floor (not the sacrificial floor), halfway
@@ -617,7 +627,7 @@ To calibrate the Opti-Track system, start it up as above, then click
   and aim the long leg at the center of the screen.  Level it if
   necessary.
 
-\item Click ``ground plane''
+\item Click \button{ground plane}.
 
 \item The actual zero of the \yurt is four feet above the ground plane,
   so you'll have to adjust the Y dimension of the calibration to equal
@@ -637,9 +647,15 @@ want to replace these items, or the metal may become bent and the
 system will not recognize it any more.
 
 To replace an object in the calibration, click on the project
-description, then
+description, then find the object in question and delete it.
 
-Steps for adding/replacing an object.
+To add an object, use the \menu{Add Rigid Bodies} tool.  You will see two
+choices, \button{from visible} and \button{from selected}.  The easiest thing to
+do is often to put the object to be tracked alone in the middle of the
+floor, leave the \yurt, and use the \button{from visible} option.  This
+will create a new object out of the markers visible to the system at
+the time.  Once the object is created, you should change its name to
+whatever is appropriate.
 
 
 \subsubsection{3D printer patterns}
@@ -648,20 +664,14 @@ There are a variety of 3D print patterns for various \yurt accessories
 found in the cavedemo data directory, in the \cmd{yurt-tools} directory.
 
 
-\subsection{Polhemus tracking}
-
-The Polhemus (magnetic) tracking system is not currently installed.
-
-% Charging, location of transmitter, how is it connected and powered?
-
-% Is there software that needs to be started/restarted?
-
 \subsection{Pointer}
 
-The location of the wand is controlled by the Opti-track software, but
-the button presses and joystick operation takes a different route.
+The location of the wand is tracked and reported by the Opti-track
+software, but the button presses and joystick operation take a
+different route.
 
-The wand communicates with the system via a dongle on the kiosk
+The wand is a PS/2 game controller that communicates with the system
+via a Bluetooth dongle on the kiosk
 computer.  If the wand's VRPN server is running, the button presses
 are reported as VRPN events, using the key below.
 
@@ -669,7 +679,8 @@ are reported as VRPN events, using the key below.
 \includegraphics[width=0.6\columnwidth]{yurt-wand-controller.jpg}
 \end{center}
 
-Don't forget to restart the wand's VRPN server if the dongle gets unplugged.
+If the dongle is unplugged, you must restart the wand's VRPN server.
+This is on the kiosk Desktop.
 
 
 To plug in the dongle, look for a small button on its end.  Press the
@@ -683,6 +694,16 @@ dongle and within eight seconds, press both the power button and the
 select button (the button opposite the power button on the wand).  This is an
 undocumented feature of the wand, so these instructions are merely
 provisional, but this appears to work.
+
+
+\subsection{Polhemus tracking}
+
+The Polhemus (magnetic) tracking system is not currently installed.
+
+% Charging, location of transmitter, how is it connected and powered?
+
+% Is there software that needs to be started/restarted?
+
 
 
 \section{Glasses, Stereo}
@@ -706,10 +727,10 @@ In the meantime, to fix the problem, you can use the controls for the
 Opti-Track software.  (See section~\ref{opti-track}.)
 
 Over on the right hand side of the Motive software window, you'll see
-an ``Output 1'' list of attributes.  Beneath it, there is a
-``Polarity'' setting, with a dropdown menu.  Click on that option,
+an \menu{Output 1} list of attributes.  Beneath it, there is a
+\button{Polarity} setting, with a dropdown menu.  Click on that option,
 change the polarity from inverse to normal or the other way around,
-and click ``Apply'' at the top of that column of the screen.
+and click \button{Apply} at the top of that column of the screen.
 
 
 The kiosk has a program on it for checking the stereo configuration
@@ -764,14 +785,39 @@ until the lenses go clear.
 
 \section{Kiosk and Demos}
 
-The Kiosk is (sadly) a Windows machine.  There isn't a lot to say
-about it, but when it misbehaves and needs to be rebooted, use this
+The Kiosk is a Windows machine.  For the \yurt to operate, it needs
+several pieces of software to be running:
+
+\begin{enumerate}
+\item Opti-Trak tracking software to monitor the location of the
+  tracked glasses and the wands.  Use the Motive application, on the
+  kiosk machine Desktop.  See section~\ref{opti-track} about starting
+  it. 
+
+\item The VRPN server to monitor button presses and joystick use on
+  the wands.  This is started from a script on the Desktop called XX.
+
+\item A sound server to run the sound effects for CaveWriting.  This
+  is started from a script on the Desktop called XX.
+
+\end{enumerate}
+
+
+In addition, the Kiosk itself is a web page, hosted on dev09.  Running
+the kiosk involves making sure there is a browser open, and pointing
+to the kiosk host.
+% the virtual host caveweb1.oscar.ccv.brown.edu.
+
+
+\subsection{Rebooting the Kiosk}
+
+When the kiosk misbehaves and needs to be rebooted, use this
 procedure.
 
 \begin{enumerate}
 \item Remove the Opti-Track software dongle from the USB ports on the
-  back.  Remember which port it came from.  This dongle appears to
-  prevent the machine from booting properly.
+  back.  Remember which port it came from.  When inserted, this dongle
+  appears to prevent the machine from booting properly.
 
 \item Reboot.
 
@@ -784,19 +830,39 @@ procedure.
 
 \end{enumerate}
 
-The kiosk itself is a web page, hosted on dev09.
-% the virtual host caveweb1.oscar.ccv.brown.edu.
+\subsection{Web interface}
+
+The Kiosk interface is a CGI Perl script that looks at the
+\dir{yurt-kiosk} directory of the \cmd{cavedemo} account home
+directory and creates a web page according to the structure it finds
+there.
+
+Each sub-directory of \dir{yurt-kiosk} becomes a tab that holds a
+collection of demos.  Each sub-directory of that contains an image and
+a run script, and is transformed into a button with the given image
+that executes the run script when the user clicks on it.  So there
+might be a \dir{Demos} sub-directory in \dir{yurt-kiosk}, and inside
+it an \dir{Ode} directory, containing a PNG and a run script, called
+\cmd{run}.  This will result in a \dir{Demos} tab on the front page of
+the kiosk, which will contain a button with the Ode PNG on it, and
+which will execute the \cmd{run} script when clicked.
+
+
 
 \subsection{Demos}
 \label{Demos}
 
 Many of the demo programs use data assumed to be in the
-\cmd{/tmp/yurt-data} directories of the cave nodes.  There is a
-model directory in the cavedemo account, see
-\cmd{/users/cavedemo/data/model\_tmp}.  You can copy the
-\cmd{model\_tmp} directory contents to the node
-\cmd{/tmp/yurt-data} directories with the
-\cmd{copy\_data\_to\_tmp script} in the.
+\dir{/tmp/yurt-data} directories of the cave nodes.  There is a model
+directory in the cavedemo account, see
+\dir{/users/cavedemo/data/model\_tmp}.  You can copy the
+\dir{model\_tmp} directory contents to the node \dir{/tmp/yurt-data}
+directories with the \cmd{copy\_data\_to\_tmp} script in the cavedemo
+\dir{bin} directory.
+
+If you are writing a demo to be included in the kiosk that expects to
+find data in \dir{/tmp}, please use the  \dir{/tmp/yurt-data} and
+\dir{model\_tmp} directories to load your data.
 
 
 \section{Scalable software, Warping and Blending}
@@ -806,6 +872,20 @@ projector images so that several projectors can work as one.  This is
 commercial software, with a license that must be kept up to date.
 Also, the system must be recalibrated periodically, as projectors are
 jostled or vibrate to a different position.
+
+The Scalable software consists of two components.  There is an SDK
+that is linked into the \yurt software, and that does blending and
+warping according to the current calibration.  The blending and
+warping instructions for each projector are contained in a POL file
+(see section~\ref{pol-location}).  The SDK reads the file and conforms
+the images produced accordingly.
+
+The other part of the Scalable software consists of the Scalable
+Display Manager, which is used to manage the process of generating the
+POL files, also known as calibrating the screens.  This software
+consists of two parts, the SDM itself, and the Display Clients,
+to be run on each of the computers involved in the screen being
+calibrated.  
 
 \subsection{License}
 
@@ -825,7 +905,7 @@ overlap.
 These are the steps for running a calibration.  The projectors should
 be calibrated periodically, as well as after any work that might
 involve jostling or moving them.  The calibration is done per wall.
-There are five walls in the syste: front, ceiling, floor, left and
+There are five walls in the system: front, ceiling, floor, left and
 right doors.
 
 \begin{enumerate}
@@ -841,22 +921,27 @@ right doors.
 
 \item Start Scalable display clients on each of the relevant nodes.
   This is done by executing RunDisplayClient.sh on each node.  For
-  convenience, there is a ``Calibrate'' icon in the System window of
+  convenience, there is a \button{Calibrate} icon in the System window of
   the kiosk that will start the display clients on all the nodes.
 
 \newcommand{\bs}{$\backslash$}
 \item The configurations are kept on the kiosk machine, in zip files
-  within the directory \hbox{\cmd{C:\bs cave\bs scalable\_configs}}.  You will find several zips in
-  there, called \cmd{DefaultSystem\_Ceiling.zip} and so on.  These need to be
-  unpacked into \hbox{\cmd{C:\bs Program Files\bs
-      ScalableDisplay\bs DEI\bs SystemData}}.  On the kiosk Desktop,
-  you'll find a \cmd{Scripts} directory with clickable Windows scripts
-  you can use that will unpack the right zip file for you.  Click on
-  the appropriate one of 
-  those scripts to copy all the calibration files into the right
-  place and start up the Scalable Display Manager.
+  within the directory \hbox{\cmd{C:\bs cave\bs scalable\_configs}}.
+  You will find several zips in there, called
+  \cmd{DefaultSystem\_Ceiling.zip} and so on.  These need to be
+  unpacked into \hbox{\cmd{C:\bs Program Files\bs ScalableDisplay\bs
+      DEI\bs SystemData}}.  On the kiosk Desktop, you'll find a
+  \cmd{Scripts} directory with clickable Windows scripts you can use
+  that will clear out the previous calibration and unpack the right
+  zip file for you.  Click on the appropriate one of those scripts to
+  copy all the calibration files into the right place and start up the
+  Scalable Display Manager.
 
-\item With the SDM running, use the ``Display Clients'' tab to choose
+  If the zip files unpacked by each script are working properly, the
+  Display Clients and Projectors should be set up correctly.  But
+  check them as follows.
+
+\item With the SDM running, use the \menu{Display Clients} tab to choose
   which display clients you are talking to.  Check that the clients
   used by the screen you are calibrating are 
   green and on the right. 
@@ -877,14 +962,15 @@ client on the left-hand list, you can specify the IP address directly
 into a box in the right column.  The Display Client nodes you want are
 numbered 172.20.160.X, where X is the number of the cave node.
 
-\item ``Projectors'' display.  Your projectors should be in a 1xn row in
+\item \menu{Projectors} display.  Your projectors should be in a 1xn row in
   order to make the calibration cursors appear in a later step.  All
-  the projectors you see should have the little box checked.  Click
-  ``Next'' in the lower right corner, and move on to the camera
+  the projectors you see should have the little box checked.  Once the
+  projectors are in a row, click
+  \menu{Next} in the lower right corner, and move on to the camera
   display.
 
-\item ``Cameras'' display.  Set the exposure for the camera down to about
-  .25s, then click on ``Begin Data Collection'' and watch the (not very
+\item \menu{Cameras} display.  Set the exposure for the camera down to about
+  .25s, then click on {Begin Data Collection} and watch the (not very
   interesting) light show.  The computer will turn on each projector
   full white, then go back and do them all with little blocks, and
   with a central image that defines the orientation of the
@@ -892,17 +978,17 @@ numbered 172.20.160.X, where X is the number of the cave node.
 
 \begin{note}
   When calibrating the ceiling, you will need to do it twice.
-  Calibrate the ceiling up to this point (including the ``Update
-  Calibration'' button on the next page), and then run the
-  ``Create\_Ceiling\_Masks'' script in the Desktop ``Scripts''
-  directory and do the ``Cameras'' step again.
+  Calibrate the ceiling up to this point (including the \button{Update
+    Calibration} button on the next page), and then run the
+  \cmd{Create\_Ceiling\_Masks} script in the Desktop \dir{Scripts}
+  directory and do the \menu{Cameras} step again.
 \end{note}
 
 \item Screens tab.  Use this to confirm the shape of the screen looks
   more or less the way you anticipate it will look, and then click
-  ``Next'' and move on.
+  \button{Next} and move on.
 
-\item ``Image Boundary'' tab.  Use this to set the control point
+\item \menu{Image Boundary} tab.  Use this to set the control point
   positions for the calibration.  There are two methods, the first
   involving moving cursors around the screen itself, and the second
   looking at a camera image of the screen.  To use the camera method,
@@ -942,17 +1028,17 @@ numbered 172.20.160.X, where X is the number of the cave node.
   If the control points are placed in some way that the software deems
   impossible (maybe you have the order incorrect, for example), the
   software will respond with an error 79, and an incomprehensible
-  message about not being able to write the ScalableDisplay.ol0 file.
+  message about not being able to write the \cmd{ScalableDisplay.ol0} file.
 
 \item Perspective display.  All the walls are defined with coordinates
   that place them in the front of the room.  After calibration, these
-  shapes must be rotated into the correct location.  The ``Eye Point''
+  shapes must be rotated into the correct location.  The \menu{Eye Point}
   menu in the perspective display is where this rotation happens.
   This has been set already, and if you are using the proper
-  ``DefaultSystem'' directory, you should not have to reset this.
+  \dir{DefaultSystem} directory, you should not have to reset this.
 
 \item After the control points have been placed, you can click
-  ``update calibration'' and if it runs successfully you're done with
+  \button{Update Calibration} and if it runs successfully you're done with
   the hard part, congratulate yourself.
 
 \item After successful calibration, the output POL files must be
@@ -1014,6 +1100,7 @@ are recorded here in case something goes wrong.
 \subsubsection{Digest camera data}
 
 \subsection{Location of POL files}
+\label{pol-location}
 
 The installed POL files (the output of the Scalable calibration step)
 are located in the cavedemo account home directory, in

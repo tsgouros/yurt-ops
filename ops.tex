@@ -31,9 +31,11 @@
 \newcommand{\cmd}[1]{\texttt{#1}\xspace}
 \newcommand{\dir}[1]{\textit{#1}\xspace}
 \newcommand{\menu}[1]{``#1''\xspace}
-\newcommand{\button}[1]{\textsf{#1}\xspace}
+\newcommand{\button}[1]{\framebox{\textsf{#1}\xspace}}
+\newcommand{\file}[1]{\texttt{#1}\xspace}
 \newcommand{\longcommand}[1]{-\rule{0pt}{1pt}-#1}
 \newcommand{\argle}[1]{[#1]}
+\newcommand{\bs}{$\backslash$}
 
 \begin{document}
 
@@ -649,14 +651,22 @@ system will not recognize it any more.
 To replace an object in the calibration, click on the project
 description, then find the object in question and delete it.
 
-To add an object, use the \menu{Add Rigid Bodies} tool.  You will see two
-choices, \button{from visible} and \button{from selected}.  The easiest thing to
-do is often to put the object to be tracked alone in the middle of the
-floor, leave the \yurt, and use the \button{from visible} option.  This
-will create a new object out of the markers visible to the system at
-the time.  Once the object is created, you should change its name to
-whatever is appropriate.
+To add an object, use the \menu{View/Rigid Bodies Properties} tool.
+You will see two choices, \button{Create From Visible} and
+\button{Create From Selected}.  The easiest thing to do is often to
+put the object to be tracked alone in the middle of the floor, leave
+the \yurt, use the mouse cursor to select the area containing the
+reflectors on the object, then use the \button{Create From Selected}
+option.  This will create a new object out of the markers visible to
+the system at the time.  Once the object is created, you should change
+its name to whatever is appropriate.
 
+\begin{note}{Note}
+The ``Orientation'' of the wand usually winds up pointing in exactly
+the opposite direction you expect.  Click the \menu{Orientation} tab
+and set the yaw or pitch to 180 degrees to make the pointer point the
+way you expect.
+\end{note}
 
 \subsubsection{3D printer patterns}
 
@@ -924,7 +934,6 @@ right doors.
   convenience, there is a \button{Calibrate} icon in the System window of
   the kiosk that will start the display clients on all the nodes.
 
-\newcommand{\bs}{$\backslash$}
 \item The configurations are kept on the kiosk machine, in zip files
   within the directory \hbox{\cmd{C:\bs cave\bs scalable\_configs}}.
   You will find several zips in there, called
@@ -969,12 +978,13 @@ numbered 172.20.160.X, where X is the number of the cave node.
   \menu{Next} in the lower right corner, and move on to the camera
   display.
 
-\item \menu{Cameras} display.  Set the exposure for the camera down to about
-  .25s, then click on {Begin Data Collection} and watch the (not very
-  interesting) light show.  The computer will turn on each projector
-  full white, then go back and do them all with little blocks, and
-  with a central image that defines the orientation of the
-  screen.  Click ``Next'' in the bottom right corner to advance.
+\item \menu{Cameras} display.  Set the exposure for the camera down to
+  about .25s, then click on {Begin Data Collection} and watch the (not
+  very interesting) light show.  The computer will turn on each
+  projector full white, then go back and do them all with little
+  blocks, and with a central image that defines the orientation of the
+  screen.  Set the exposure to something higher, like 5s, and click
+  ``Next'' in the bottom right corner to advance.
 
 \begin{note}
   When calibrating the ceiling, you will need to do it twice.
@@ -990,19 +1000,19 @@ numbered 172.20.160.X, where X is the number of the cave node.
 
 \item \menu{Image Boundary} tab.  Use this to set the control point
   positions for the calibration.  There are two methods, the first
-  involving moving cursors around the screen itself, and the second
-  looking at a camera image of the screen.  To use the camera method,
-  go back to the Camera tab, and increase the exposure time of the
-  camera (about 5 seconds works well) then come back to this tab and
+  involving moving cursors pprojected onto the screen itself, and the second
+  looking at a camera image of the screen and using the mouse to move
+  control points around on that.  To use the camera method, make sure
+  the exposure is set to a large value (about 5 seconds works well) then 
   select ``Pick boundary points within camera images.''  Use the mouse
-  to drag the control point positions onto the screen image.
+  to drag the control point positions around the screen image.
 
   For the ceiling calibration, this is probably the preferred method,
   since the outside control points at the top of the screen (numbers 1
   and 3) seem best when located a few inches outside the physical
-  screen.  (That edge of the screen is convex, so if you put the
-  points exactly on the screen corners, the outside edge has no image
-  on it halfway between the corners.)
+  screen.  (The outside edges of the screen are slightly convex, so if
+  you put the points exactly on the screen corners, the outside edges
+  have no image on them halfway between the corners.)
 
 \item To use the cursor-on-wall method, click ``Position points along
   screen boundary.''  Click on each of the points, and maneuver it
@@ -1056,55 +1066,51 @@ numbered 172.20.160.X, where X is the number of the cave node.
 \end{enumerate}
 
 \begin{note}
-  The calibration display clients seem to affect the sync signal
-  received by the opti-track software.  You may have to restart the
+  The Scalable display clients seem to affect the sync signal received
+  by the opti-track software, sometimes.  You may have to restart the
   framelock after calibrating the projectors.  See
   section~\ref{framelock}.
 \end{note}
 
 
-
-
-File locations for the display clients are controlled on the
-``Advanced'' options page of the Display Manager.
-
-Most times you will not need to adjust any of these settings.  They
+These are some of the settings to the Scalable Display Manager that we
+have learned about.  Not all of them are documented in the SDM help.
+Most of the time you will not need to adjust any of these settings.  They
 are recorded here in case something goes wrong.
 
 \begin{enumerate}
-\item obj file is in DEI/SystemData/DefaultSystem/Config,
-  ControlPoint3DLocationOverride contains the coordinates of the
-  control points.
+\item There is an OBJ file modeling the shape of the screen in
+  \dir{DEI/SystemData/DefaultSystem/Config}.  Look for \cmd{right.obj}
+  and \cmd{front.obj} and the like.  Set this value with the
+  \menu{Advanced} options page of the Display Manager.
 
-\item Things to configure: RemoteOutputDirectoryName (directory only),
-  also Perspective SDK Mesh File Output Path and Orthographic [same].
-  Last two are complete path and file names.  These are redundant with
-  the remote output directory name, but need to be set redundantly.
-  [THIS DOES NOT SEEM NECESSARY]
+\item \dir{ControlPoint3DLocationOverride} contains the spatial coordinates
+  of the control points.
+
+\item There are configuration options for the output files:
+  \dir{RemoteOutputDirectoryName} (directory only), also Perspective
+  SDK Mesh File Output Path and Orthographic File Output Path.  These two are
+  complete path and file names.  These are redundant with the remote
+  output directory name, but are designed to be set redundantly.
+  Experimentation has shown that setting these is not necessary.
+  These settings are controlled on the
+``Advanced'' options page of the Display Manager.
 
 \item Camera settings: ISO 200, .125 sec, f/11.
 
-\item C:ScalableDisplay/ScalableServiceInformation has jpegs in it for
-  each projector.
+\item \file{C:\bs ScalableDisplay\bs ScalableServiceInformation} has
+  JPEG images in it for each projector.  These can be used to generate
+  masks for calibration.
 
-\item There is a mask available for the calibrating.
 \end{enumerate}
 
-
-
-
-
-
-
-
-\subsubsection{Digest camera data}
 
 \subsection{Location of POL files}
 \label{pol-location}
 
 The installed POL files (the output of the Scalable calibration step)
 are located in the cavedemo account home directory, in
-``/users/cavedemo/scalable/cave.''
+\dir{/users/cavedemo/scalable/cave}.
 
 
 \subsection{Scalable libraries}
@@ -1113,8 +1119,10 @@ Pointer to Scalable documentation?
 
 mgt.oscar.ccv.brown.edu
 
+Linking them in.
 
-\subsubsection{Making a model}
+
+\subsection{Making a model}
 
 What constraints on the model?
 
@@ -1136,6 +1144,17 @@ ScreenTypeOverride
 
 
 \section{Software}
+
+This section describes where some of the software used in the \yurt
+can be found and how it is used.  
+
+\subsection{vrg3d}
+
+To use vrg3d, use the \cmd{module load cave}.
+
+\subsection{VRUI}
+
+
 
 Libraries, APIs,
 

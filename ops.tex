@@ -202,7 +202,7 @@ used for machine control of projectors in the repair station.
 \subsection{Operation}
 \label{projector-operation}
 
-Turn projectors on and off with the pjcontrol command.  
+Turn projectors on and off with the pjcontrol command.
 The pjcontrol command also is used to configure the projector color
 and brightness, and to log repairs and track inventory.  The pjcontrol
 script is part of the \cmd{cave-utils} module.  Load this with:
@@ -211,7 +211,7 @@ script is part of the \cmd{cave-utils} module.  Load this with:
 $ module load cave-utils
 \end{verbatim}
 
-You can see a help message with \cmd{pjcontrol \longcommand{help}}.  
+You can see a help message with \cmd{pjcontrol \longcommand{help}}.
 
 \subsubsection{pjcontrol}
 
@@ -229,7 +229,7 @@ pjcontrol.py [-h] [-s [SERIALNO]] [--clearErrs] [-d [MFGDATE]] [-a]
 
 The pjcontrol script has two forms of usage, reference by projector
 number, and reference by serial number.  Reference by projector number
-looks like the following.   
+looks like the following.
 
 \begin{verbatim}
 $ pjcontrol projs command
@@ -282,7 +282,7 @@ location. And 'repair' needs a serial number.
 \begin{verbatim}
 $ pjcontrol 13 raw red.gain = 125
 \end{verbatim}
-  
+
 \item[repair] Log a repair.  (Please just use a single projector
   number for this command.)  This command needs a repair type and a
   double-quoted comment.
@@ -293,13 +293,13 @@ $ pjcontrol 13 raw red.gain = 125
 \begin{verbatim}
 $ pjcontrol 42 install WACY00041
 \end{verbatim}
-  
+
   Use it like this if you have to replace the switch names as well:
 
 \begin{verbatim}
 $ pjcontrol 42 install WACY00041 switch03 1014 wall
 \end{verbatim}
-  
+
  Where the three additional arguments represent the name of the serial
  server switch, the number on the serial server that connects to the
  right projector, and an arbitrary screen name.
@@ -362,7 +362,7 @@ that matches the given fraction of a number.
                         if it contains more than one word.
 
                       \end{description}
-                      
+
 \subsubsection{pjlog}
 
 The pjcontrol command logs its usage at cave-utils/yurt/log.
@@ -463,7 +463,7 @@ maintenance log.  The actions relevant to a specific projector will be
 entered into the projector database from that record, by Tom.  (You
 are welcome to enter them yourself with the pjcontrol script.  Please
 record on the paper log that it was successfully entered.  See
-section~\ref{logging}.) 
+section~\ref{logging}.)
 
 
 \subsubsection{Bulbs}
@@ -566,6 +566,27 @@ directory.  We have not had good results editing this file directly;
 editing configuration should be done with the GUI.
 
 
+\subsection{Color calibration}
+
+There is a manual color calibration procedure, using a Python program
+to select a projector to adjust.
+
+Go to yurtcol directory inside cave-utils.
+
+python yurtcol.py gives a curses window, reloads config file.  This
+takes quite some time, so let it run before beginning to adjust
+projectors.
+
+j,k to go up and down, h,l to go right to left. Mostly. The mapping up
+and down seems troublesome.
+
++,- for brightness
+R,r G,g B,b for specific colors
+
+
+q to exit
+
+
 \section{Tracking, Heads and Pointers}
 
 \subsection{Opti-Track tracking system}
@@ -608,7 +629,7 @@ To calibrate the Opti-Track system, start it up as above, then click
 \item Mask the visible light sources.
 
 \item Choose calibration type (``full'') and `optiwand' option
-  (``large''). 
+  (``large'').
 
 \item Make sure that all the cameras are accounted for and reporting
   properly in the list on the left of the window.
@@ -748,12 +769,12 @@ The kiosk has a program on it for checking the stereo configuration
 and right eyes.  When you hold the glasses up against any part of the
 \yurt screen, one lens will appear red and the other green.  When the
 glasses look like the image of the glasses in the icon, the stereo is
-configured correctly.  
+configured correctly.
 
 When the framelock is not working, there will frequently be areas of
 the screen for which the stereo is not working.  If you see
 inconsistencies across the field of view, try resetting the
-framelock.  See section~\ref{framelock} on Framelock. 
+framelock.  See section~\ref{framelock} on Framelock.
 
 
 \iffalse
@@ -802,7 +823,7 @@ several pieces of software to be running:
 \item Opti-Trak tracking software to monitor the location of the
   tracked glasses and the wands.  Use the Motive application, on the
   kiosk machine Desktop.  See section~\ref{opti-track} about starting
-  it. 
+  it.
 
 \item The VRPN server to monitor button presses and joystick use on
   the wands.  This is started from a script on the Desktop called \cmd{start\_joysticks.bat}.
@@ -918,7 +939,7 @@ Display Manager, which is used to manage the process of generating the
 POL files, also known as calibrating the screens.  This software
 consists of two parts, the SDM itself, and the Display Clients,
 to be run on each of the computers involved in the screen being
-calibrated.  
+calibrated.
 
 \subsection{License}
 
@@ -950,7 +971,7 @@ right doors.
     connection with the Windows machine.  You'll know when the
     Scalable Display Manager fails to operate the camera shutter.  At
     the moment, there is no known cure besides rebooting the kiosk
-    machine.} 
+    machine.}
 
 \item Start Scalable display clients on each of the relevant nodes.
   This is done by executing RunDisplayClient.sh on each node.  For
@@ -975,8 +996,8 @@ right doors.
 
 \item With the SDM running, use the \menu{Display Clients} tab to choose
   which display clients you are talking to.  Check that the clients
-  used by the screen you are calibrating are 
-  green and on the right. 
+  used by the screen you are calibrating are
+  green and on the right.
 
   \begin{center}
   \begin{tabular}{ll}
@@ -985,7 +1006,7 @@ right doors.
     Ceiling & cave008, cave009, cave010 \\
     Left door & cave011, cave019 \\
     Right door & cave012, cave013 \\
-    Floor & cave014, cave015, cave016, cave017, cave018 \\ 
+    Floor & cave014, cave015, cave016, cave017, cave018 \\
   \end{tabular}
 \end{center}
 
@@ -1026,7 +1047,7 @@ numbered 172.20.160.X, where X is the number of the cave node.
   involving moving cursors pprojected onto the screen itself, and the second
   looking at a camera image of the screen and using the mouse to move
   control points around on that.  To use the camera method, make sure
-  the exposure is set to a large value (about 5 seconds works well) then 
+  the exposure is set to a large value (about 5 seconds works well) then
   select ``Pick boundary points within camera images.''  Use the mouse
   to drag the control point positions around the screen image.
 
@@ -1169,7 +1190,7 @@ ScreenTypeOverride
 \section{Software}
 
 This section describes where some of the software used in the \yurt
-can be found and how it is used.  
+can be found and how it is used.
 
 \subsection{vrg3d}
 

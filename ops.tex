@@ -79,6 +79,7 @@ follow these steps:
   the work area behind the elevator.
 
 \item Place safety grating over the nearest gap to the projector.
+  This is stored inside the eastern access door under the floor.
 
 \item Loosen set screws on vertical shaft.  The projector mount,
   including the flat plate, and the shaft, must be removed with the
@@ -145,6 +146,9 @@ installation of the cave image, the init file found at
 To restart the X server on a node, log into that node as cavedemo, and
 run \cmd{killall unclutter}.
 
+Find the relevant startx script here:
+\cmd{/gpfs/runtime/nvidia/cave-X11/cave-startx}.
+
 
 \subsection{NVidia driver}
 
@@ -161,10 +165,21 @@ from v313 to v361 caused boot failures on two nodes.
 
 \section{Projectors}
 
-There are two documents we have from the projector manufacturer.  One
-is the specification for the projectors we have, and the other is a
-repair manual for a related species of projector.  They are stored in
-\cmd{/home/tsgouros/cave-documents}.
+There are two documents we have from the projector manufacturer.  
+
+
+\begin{description}
+
+\item[Brown 3D Spec Rev1 2011-11-21.pdf]  The specification for the
+  projectors we have.
+
+\item[DP HTD-8650\_Service Manual Guide.2015-4-30 Rev 01.pdf] A repair
+  manual for the projector breed that ours are hacked from.
+
+\end{description}
+
+Both documents can be found on the OSCAR system at
+\cmd{/home/cavedemo/cave-documents}. 
 
 
 \subsection{Location}
@@ -376,10 +391,12 @@ database.  This should be run at least weekly.
 \subsubsection{projd}
 
 In order to address deficiencies in the Scalable Display Manager
-software, there is a system by which projector commands can be sent to
-an IP address, and forwarded to a specific projector.  The projd
-command listens on a set of ports, and forwards the connections to the
-projector correponding to that port.
+software,\footnote{It expects all projectors to be connected via
+  ethernet, not serial control.  This option was not available on our
+  projectors at the time of purchase.} there is a system by which
+projector commands can be sent to an IP address, and forwarded to a
+specific projector.  The projd command listens on a set of ports, and
+forwards the connections to the projector correponding to that port.
 
 The projd script calls the projd.py Python script, which defines a
 projChats object that takes two numbers as an argument:
@@ -398,6 +415,19 @@ pjcontrol-raw script, which is not to be used otherwise.
 This is part of the pjcontrol script operation and is not meant to be
 used independently.
 
+\subsection{Problem on power up}
+
+About one time in 200, a projector fails to power up properly and
+displays a message about not being able to find a signal.  Since
+there are 69 projectors in the system, this happens fairly
+frequently.  Toggling the stereo on the problem projector seems to
+address the issue:
+
+\begin{verbatim}
+$ pjcontrol 15 mono; sleep 15; pjcontrol 15 stereo
+\end{verbatim}
+
+This is also a generally useful way to restart a projector.
 
 \subsection{Inventory and Logs}
 \label{logging}
@@ -451,7 +481,7 @@ report for the current date and time.
 \begin{note}[Note]
 All changes to the projectors, whether it be repairs or maintenance,
 bulb replacement or guts, should be logged on the repair log clipboard
-hanging on the tool shelf.
+hanging on the right hand end of the cabinet in the tool area.
 \end{note}
 
 So far as we currently understand it, the only maintenance required is
@@ -460,7 +490,7 @@ out, not to anticipate their demise.
 
 All maintenance and repair actions should be recorded on the paper
 maintenance log.  The actions relevant to a specific projector will be
-entered into the projector database from that record, by Tom.  (You
+entered into the projector database from that record.  (You
 are welcome to enter them yourself with the pjcontrol script.  Please
 record on the paper log that it was successfully entered.  See
 section~\ref{logging}.)
@@ -473,20 +503,22 @@ replacing them proactively.  Once the color calibration is functional,
 we will be keeping data about color change over the bulb lifetime and
 may change policy after analyzing that data.
 
-We are currently procuring bulbs from the manufacturer, but we have
-identified two alternate bulb suppliers at present:
+We are currently procuring bulbs from Digital Projection, who also
+services the projectors.  We have also used this supplier
+
+
 
 \begin{description}
-
-\item[Relampit] Contact: Tom Sullivan, Relampit, 120 Wilbur Place, Suite C,
-Bohemia, NY 11716, 631-244-0051x122, tsullivan@relampit.com, \$558
-new, \$495 relamp.  Warranty runs 90 days from installation, free
-shipping.
 
 \item[Greenleigh and Wong] Contact: Tom Greenleigh, Greenleigh Wong Lamps, 1680
 Navajo Road, Ground Floor, Ogden UT, 84403, 801-475-7800,
 tom@gwlamps.com. \$535 new, \$361 relamp.  Warranty runs 180 days from
 shipping.
+
+\item[Relampit] Contact: Tom Sullivan, Relampit, 120 Wilbur Place, Suite C,
+Bohemia, NY 11716, 631-244-0051x122, tsullivan@relampit.com, \$558
+new, \$495 relamp.  Warranty runs 90 days from installation, free
+shipping.  [ AS OF 1/18, NO LONGER IN RELAMPING BUSINESS ] 
 
 \end{description}
 
@@ -494,7 +526,8 @@ shipping.
 \subsubsection{Shipping for repair}
 
 Units should be shipped for repair in one of the original boxes. There
-are a few still around.
+are a few still around.  We are using Digital for service, but
+managing that through Ambient Sound, their local dealer.
 
 Before sending off, please ensure that the error record of the
 projector is recorded in the projector database. If the projector is
@@ -506,6 +539,37 @@ $ pjcontrol 70 gather
 \end{verbatim}
 
 
+\subsubsection{Reinstalling after repair}
+
+The projectors come back from repair almost certainly have the wrong
+firmware.  To install the correct firmware, use the instructions
+located in the yurt room at the repair station.
+
+Most of the time, you can get away with updating the App01 and FPGA
+software, and this can be done after the projector is installed, so
+long as the back of the projector is accessible.  To do this, insert
+the master thumb drive into the projector, and issue the command:
+
+\begin{verbatim}
+$ pjcontrol 60 raw bootop = 4
+\end{verbatim}
+
+(But use the projector number instead of 60.) Then reboot the
+projector by removing and reinstalling the power cord, with a 10
+second wait in between.  Then do the same thing with this command:
+
+\begin{verbatim}
+$ pjcontrol 60 raw bootop = 9
+\end{verbatim}
+
+Then
+
+\begin{verbatim}
+$ pjcontrol 60 raw factory.reset
+\end{verbatim}
+
+The instructions and master thumb drive are stored in the cabinet over
+the tool area, on the bottom right.
 
 
 \subsection{Ventilation}
@@ -727,16 +791,6 @@ undocumented feature of the wand, so these instructions are merely
 provisional, but this appears to work.
 
 
-\subsection{Polhemus tracking}
-
-The Polhemus (magnetic) tracking system is not currently installed.
-
-% Charging, location of transmitter, how is it connected and powered?
-
-% Is there software that needs to be started/restarted?
-
-
-
 \section{Glasses, Stereo}
 
 The Volfoni glasses are operated by an RF signal generated by a small
@@ -888,6 +942,18 @@ form in the cavedemo home directory, at
 \dir{~cavedemo/project-archive}, and any data it uses should be in
 \dir{~cavedemo/data/projects}.  Please leave lots of README files
 around and a working make or cmake file.
+
+\subsubsection{Authorization}
+
+The kiosk has a set of accounts with which to log activity.  The
+account authorization list is at \cmd{/users/cavedemo/etc/psd.txt}.
+It is a simple comma-separated list with a username and a password on
+each line.  Use ``12345'' for an initial password, or to restore
+access, and the script will demand a user change it, and store a
+hashed password string when they sign in.  (Yes, it is not a
+high-security system, merely meant to log activity in a non-anonymous
+way.)
+
 
 \subsection{Tablet}
 
@@ -1149,65 +1215,65 @@ are recorded here in case something goes wrong.
 \end{enumerate}
 
 
-\subsection{Location of POL files}
-\label{pol-location}
+% \subsection{Location of POL files}
+% \label{pol-location}
 
-The installed POL files (the output of the Scalable calibration step)
-are located in the cavedemo account home directory, in
-\dir{/users/cavedemo/scalable/cave}.
-
-
-\subsection{Scalable libraries}
-
-Pointer to Scalable documentation?
-
-mgt.oscar.ccv.brown.edu
-
-Linking them in.
+% The installed POL files (the output of the Scalable calibration step)
+% are located in the cavedemo account home directory, in
+% \dir{/users/cavedemo/scalable/cave}.
 
 
-\subsection{Making a model}
+% \subsection{Scalable libraries}
 
-What constraints on the model?
+% Pointer to Scalable documentation?
 
-via blender, via kinect?
+% mgt.oscar.ccv.brown.edu
 
-On Win machine, logged in as last mohican (hawkeye), there is said to
-be a file with a modest amount of documentation about how to use and
-install obj files.  Lies, all lies!
+% Linking them in.
 
 
-\subsubsection{Importing the model}
+% \subsection{Making a model}
 
-How to get it read by the Scalable Display manager thing.
+% What constraints on the model?
 
-John's zipfile hack.
+% via blender, via kinect?
 
-
-ScreenTypeOverride
-
-
-\section{Software}
-
-This section describes where some of the software used in the \yurt
-can be found and how it is used.
-
-\subsection{vrg3d}
-
-To use vrg3d, use the \cmd{module load cave}.
-
-\subsection{VRUI}
+% On Win machine, logged in as last mohican (hawkeye), there is said to
+% be a file with a modest amount of documentation about how to use and
+% install obj files.  Lies, all lies!
 
 
+% \subsubsection{Importing the model}
 
-Libraries, APIs,
+% How to get it read by the Scalable Display manager thing.
+
+% John's zipfile hack.
 
 
-\section{Construction}
+% ScreenTypeOverride
 
-Knot for tying monofilament, ``Nanofil''
 
-Mirror suppliers
+% \section{Software}
+
+% This section describes where some of the software used in the \yurt
+% can be found and how it is used.
+
+% \subsection{vrg3d}
+
+% To use vrg3d, use the \cmd{module load cave}.
+
+% \subsection{VRUI}
+
+
+
+% Libraries, APIs,
+
+
+% \section{Construction}
+
+% Knot for tying monofilament, ``Nanofil''
+
+% Mirror suppliers
 
 
 
